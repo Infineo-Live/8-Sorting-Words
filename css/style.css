@@ -463,15 +463,27 @@ body {
 .blank-placeholder {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
-  color: #4a290d;
+  color: #2c1607;
   padding: 0 clamp(10px, 1.8vw, 24px) clamp(10px, 1.5vh, 18px) clamp(10px, 1.8vw, 24px); /* Swapped to standard viewport units */
   border-radius: 0;
   border: none;
-  font-size: clamp(17px, 2.5vw, 27px); /* Scaled font size proportionally using vw */
-  font-weight: 700;
-  transition: filter 0.3s ease, opacity 0.5s ease;
+  font-family: 'Fredoka', 'Comfortaa', 'Outfit', sans-serif;
+  font-size: clamp(20px, 2.9vw, 32px); /* Increased font size proportionally by ~15-20% */
+  font-weight: 800;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: filter 0.3s ease, opacity 0.5s ease, scale 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
   position: relative;
-  text-shadow: none;
+  will-change: transform, opacity; /* GPU Performance Optimization */
+  
+  /* Bevel & emboss effect with soft warm golden outer glow */
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 6px rgba(254, 228, 64, 0.5),
+    0 2px 4px rgba(44, 22, 7, 0.4);
+    
   width: clamp(180px, 20vw, 235px); /* Increased size using vw */
   height: clamp(120px, 13vh, 157px); /* 1.5 aspect ratio using vh */
   display: inline-flex;
@@ -500,19 +512,39 @@ body {
 
 .word-cloud:hover {
   z-index: 10;
+  scale: 1.04; /* Slightly increase scale by ~4% */
   filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.5)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 12px rgba(254, 228, 64, 0.9), /* Brighten glow on hover */
+    0 2px 4px rgba(44, 22, 7, 0.4);
+  /* Override textGlowBreath to keep hover text-shadow static, but keep float */
+  animation: breatheCloud 4.5s ease-in-out infinite alternate;
 }
 
 .word-cloud.glowing {
   filter: drop-shadow(0 0 12px var(--color-gold)) brightness(1.1);
   box-shadow: none;
   border-color: transparent;
-  transition: filter 0.8s ease, transform 0.8s ease;
+  transition: filter 0.8s ease, transform 0.8s ease, scale 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
+  scale: 1.04;
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 14px rgba(254, 228, 64, 0.95),
+    0 2px 4px rgba(44, 22, 7, 0.4);
+  animation-play-state: paused;
 }
 
 .word-cloud.locked-arrival {
   filter: drop-shadow(0 0 25px var(--color-gold)) brightness(1.4);
   transform: scale(1.15) !important;
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 14px rgba(254, 228, 64, 0.95),
+    0 2px 4px rgba(44, 22, 7, 0.4);
 }
 
 /* Missing Word Blank Placeholder styled as a matching cloud shape */
@@ -743,11 +775,12 @@ body {
 .option-cloud {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
-  color: #4a290d;
+  color: #2c1607;
   border: none;
   box-shadow: none;
-  font-size: clamp(12px, 1.8vw, 22px); /* Swapped cqw to vw */
-  font-weight: 700;
+  font-family: 'Fredoka', 'Comfortaa', 'Outfit', sans-serif;
+  font-size: clamp(14px, 2.1vw, 26px); /* Increased font size proportionally by ~15-20% */
+  font-weight: 800;
   padding: 0 clamp(12px, 3vw, 36px) clamp(10px, 1.8vh, 18px) clamp(12px, 3vw, 36px); /* Swapped cqw/cqh to vw/vh */
   border-radius: 0;
   width: clamp(110px, 14vw, 160px); /* Swapped cqw to vw */
@@ -757,7 +790,20 @@ body {
   justify-content: center;
   position: relative;
   z-index: 3;
-  transition: opacity 0.5s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  will-change: transform, opacity; /* GPU Performance Optimization */
+  
+  /* Bevel & emboss effect with soft warm golden outer glow */
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 6px rgba(254, 228, 64, 0.5),
+    0 2px 4px rgba(44, 22, 7, 0.4);
+    
+  transition: opacity 0.5s ease, scale 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
+  animation: textGlowBreath 3s ease-in-out infinite alternate;
 }
 
 /* Water ripple overlay at the base of the floating container */
@@ -826,8 +872,25 @@ body {
   z-index: 50;
 }
 
+.option-container:hover .option-cloud {
+  scale: 1.04; /* Slightly scale up cloud inside hovered container */
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 12px rgba(254, 228, 64, 0.9), /* Brighten text glow */
+    0 2px 4px rgba(44, 22, 7, 0.4);
+  animation-play-state: paused; /* Pause text glow breath on hover */
+}
+
 .option-container.glowing .option-cloud {
   filter: drop-shadow(0 0 12px var(--color-gold)) brightness(1.15);
+  scale: 1.04;
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 14px rgba(254, 228, 64, 0.95),
+    0 2px 4px rgba(44, 22, 7, 0.4);
+  animation-play-state: paused;
 }
 
 .option-container.glowing .option-glow {
@@ -1094,6 +1157,13 @@ body {
   top: 0;
   z-index: 1000;
   
+  /* Layout variables for enlarged logo and overlapping play button */
+  --logo-width: clamp(494px, 78vw, 988px);
+  --logo-max-width: min(90vw, 105vh);
+  --logo-height: calc(min(var(--logo-width), var(--logo-max-width)) / 1.5);
+  --btn-height: 54px;
+  --overlap: 8px; /* ~15% overlap of the 54px play button height */
+  
   /* Fade out over 500ms when hidden is added */
   transition: opacity 500ms ease, visibility 500ms ease !important;
 }
@@ -1168,9 +1238,10 @@ body {
 .logo-container {
   position: absolute;
   left: 50%;
-  top: 34%; /* Positioned slightly higher to maintain comfortable gap from the Play button */
+  top: calc(50% - var(--btn-height) / 2 + var(--overlap) / 2);
   transform: translate(-50%, -50%);
-  width: clamp(380px, 60vw, 760px); /* Increased size for visual presence */
+  width: var(--logo-width);
+  max-width: var(--logo-max-width);
   height: auto;
   z-index: 90;
   pointer-events: none;
@@ -1257,9 +1328,9 @@ body {
 .play-button-wrapper {
   position: absolute;
   left: 50%;
-  top: 66%; /* Positioned comfortably below the centerpiece logo */
+  top: calc(50% + var(--logo-height) / 2 - var(--overlap) / 2);
   width: 160px; /* Reduced Play button size by ~22% */
-  height: 54px;
+  height: var(--btn-height);
   transform: translate(-50%, -50%);
   z-index: 100;
   
@@ -1765,18 +1836,48 @@ body {
   }
 }
 
-/* Continuous breathing for other clouds */
+/* Continuous breathing for other clouds (fallback defaults) */
 .word-cloud {
-  animation: breatheCloud 4.5s ease-in-out infinite alternate;
+  animation: breatheCloud1 5s ease-in-out infinite alternate,
+             textGlowBreath 3s ease-in-out infinite alternate;
 }
 
-@keyframes breatheCloud {
-  0% {
-    transform: translateY(0);
-  }
+/* 4 Desynchronized organic floating animations (bobbing + side drift + rotate) */
+@keyframes breatheCloud1 {
+  0% { transform: translate3d(0, 0, 0) rotate(-0.3deg); }
+  100% { transform: translate3d(1px, -3px, 0) rotate(0.3deg); }
+}
 
+@keyframes breatheCloud2 {
+  0% { transform: translate3d(0, 0, 0) rotate(0.2deg); }
+  100% { transform: translate3d(-1.5px, -2.5px, 0) rotate(-0.2deg); }
+}
+
+@keyframes breatheCloud3 {
+  0% { transform: translate3d(0, 0, 0) rotate(-0.4deg); }
+  100% { transform: translate3d(1.5px, -2px, 0) rotate(0.4deg); }
+}
+
+@keyframes breatheCloud4 {
+  0% { transform: translate3d(0, 0, 0) rotate(0.3deg); }
+  100% { transform: translate3d(-1px, -3px, 0) rotate(-0.3deg); }
+}
+
+/* Breathing text shadow golden glow animation */
+@keyframes textGlowBreath {
+  0% {
+    text-shadow:
+      -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+      0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+      0 0 5px rgba(254, 228, 64, 0.45),
+      0 2px 4px rgba(44, 22, 7, 0.4);
+  }
   100% {
-    transform: translateY(-4px);
+    text-shadow:
+      -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+      0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+      0 0 10px rgba(254, 228, 64, 0.75),
+      0 2px 4px rgba(44, 22, 7, 0.4);
   }
 }
 
@@ -2220,4 +2321,222 @@ body {
     transform: translate(-50%, -50%) scale(0);
     opacity: 0;
   }
+}
+
+/* ==========================================
+   Cinematic Cloud Entrance Sequence
+   ========================================== */
+
+/* Animated entrance for the first cloud floating from the left with vertical breeze bobbing and rotation */
+@keyframes firstCloudEntrance {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--first-start-x), 0, 0) scale(0.96) rotate(-1deg);
+  }
+  35% {
+    opacity: 0.5;
+    transform: translate3d(calc(var(--first-start-x) * 0.65), -6px, 0) scale(0.97) rotate(1deg); /* Bob up */
+  }
+  70% {
+    opacity: 0.9;
+    transform: translate3d(calc(var(--first-start-x) * 0.3), 4px, 0) scale(0.985) rotate(-0.8deg); /* Bob down */
+  }
+  85% {
+    opacity: 1;
+    transform: translate3d(-5px, -2px, 0) scale(1.01) rotate(0.4deg); /* Overshoot */
+  }
+  93% {
+    transform: translate3d(2px, 1px, 0) scale(0.995) rotate(-0.2deg); /* Undershoot / Bounce */
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg); /* Soft Settle */
+  }
+}
+
+/* Animated entrance for subsequent clouds emerging from behind their predecessor with breeze bobbing and rotation */
+@keyframes followingCloudEntrance {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--start-x), var(--start-y), 0) scale(0.95) rotate(-1deg);
+  }
+  20% {
+    opacity: 0.15; /* Emerge delay: remains faint and partially hidden for the first 20% */
+    transform: translate3d(calc(var(--start-x) * 0.8), calc(var(--start-y) * 0.8 - 2px), 0) scale(0.96) rotate(0.8deg);
+  }
+  85% {
+    opacity: 1;
+    transform: translate3d(-5px, -2px, 0) scale(1.01) rotate(-0.4deg); /* Overshoot */
+  }
+  93% {
+    transform: translate3d(2px, 1px, 0) scale(0.995) rotate(0.2deg); /* Undershoot / Bounce */
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg); /* Soft Settle */
+  }
+}
+
+/* Magical Sparkles for Cloud Emergence */
+.magical-sparkle {
+  position: absolute;
+  background: radial-gradient(circle, #fee440 0%, rgba(251, 133, 0, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 20;
+  transform: translate(-50%, -50%) scale(1);
+  animation: sparkleFly 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes sparkleFly {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   Satisfying Answer Click Feedback
+   ========================================== */
+
+/* CORRECT ANSWER: Glowing Success styles */
+.option-container.correct-success {
+  transform: translate3d(0, 0, 0) scale(1.1) !important;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.option-container.correct-success .option-cloud {
+  animation: correctCloudFlash 0.65s ease-in-out forwards;
+  border: 2px solid rgba(254, 228, 64, 0.8) !important;
+}
+
+@keyframes correctCloudFlash {
+  0% {
+    filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.8)) brightness(1.15);
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 1);
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1)) brightness(1.35);
+    box-shadow: inset 0 0 30px rgba(255, 255, 255, 1);
+  }
+  100% {
+    filter: drop-shadow(0 0 12px rgba(254, 228, 64, 0.8)) brightness(1.0);
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Success Halo behind the cloud */
+.magical-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(0.2);
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(254, 228, 64, 0.6) 0%, rgba(254, 228, 64, 0.25) 45%, rgba(254, 228, 64, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  animation: haloExpansion 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes haloExpansion {
+  0% {
+    transform: translate3d(-50%, -50%, 0) scale(0.2);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) scale(1.45);
+    opacity: 0;
+  }
+}
+
+/* Success sparkles styling */
+.success-sparkle {
+  z-index: 1000;
+  background: radial-gradient(circle, #fee440 0%, #ffb703 60%, rgba(255, 255, 255, 0) 100%) !important;
+  box-shadow: 0 0 8px #fee440;
+}
+
+/* Final soft golden pulse when correct word merges into sentence */
+.word-cloud.filled-success-pulse {
+  animation: correctWordPulse 0.8s ease-out forwards !important;
+}
+
+@keyframes correctWordPulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.5)) brightness(1);
+  }
+  30% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1)) brightness(1.25);
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.5)) brightness(1);
+  }
+}
+
+/* WRONG ANSWER: Storm Cloud vibration */
+.option-container.storm-cloud-container {
+  pointer-events: none;
+  animation: stormVibrate 0.55s linear infinite !important;
+}
+
+.option-container.storm-cloud-container .option-cloud {
+  filter: grayscale(0.85) sepia(0.2) hue-rotate(220deg) brightness(0.42) drop-shadow(0 0 12px rgba(100, 149, 237, 0.75)) !important;
+  color: #e5e5e5 !important;
+  text-shadow: 0 0 5px #000 !important;
+  transition: filter 0.3s ease, color 0.3s ease;
+  overflow: hidden;
+}
+
+/* Internal lightning flicker element */
+.lightning-flash {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0);
+  pointer-events: none;
+  z-index: 5;
+  animation: lightningBolt 0.45s ease-out 2;
+}
+
+@keyframes lightningBolt {
+  0% { background: rgba(255, 255, 255, 0); }
+  8% { background: rgba(173, 216, 230, 0.8); }
+  14% { background: rgba(255, 255, 255, 0); }
+  45% { background: rgba(230, 230, 250, 0.85); }
+  55% { background: rgba(255, 255, 255, 0); }
+}
+
+/* Storm Cloud vibration */
+@keyframes stormVibrate {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20% { transform: translate3d(-2px, 1px, 0) rotate(-0.5deg); }
+  40% { transform: translate3d(1.5px, -1px, 0) rotate(0.5deg); }
+  60% { transform: translate3d(-1.5px, -1.5px, 0) rotate(-0.3deg); }
+  80% { transform: translate3d(2px, 1px, 0) rotate(0.3deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+
+/* Melting storm cloud dissolving into water */
+.option-container.melting-water {
+  opacity: 0;
+  transform: translate3d(0, 110px, 0) scaleY(0.1) scaleX(0.7) !important;
+  filter: blur(10px) brightness(0.6);
+  transition: transform 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.6s ease, filter 0.6s ease;
+  pointer-events: none;
 }

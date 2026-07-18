@@ -318,5 +318,80 @@ const SoundManager = {
 
     noiseNode.start(now);
     noiseNode.stop(now + 0.25);
+  },
+
+  // Synthesize an arpeggiated major chord chime for correct answers
+  playCorrectChime() {
+    this.init();
+    if (!this.ctx || this.isMuted) return;
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+
+    const now = this.ctx.currentTime;
+    const baseFreq = 587.33; // D5
+    const notes = [1, 1.25, 1.5, 1.875, 2.0]; // Arpeggiated D Major Triad overtones
+    
+    notes.forEach((ratio, index) => {
+      const osc = this.ctx.createOscillator();
+      const gainNode = this.ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(baseFreq * ratio, now + index * 0.05);
+      
+      gainNode.gain.setValueAtTime(0.001, now + index * 0.05);
+      gainNode.gain.linearRampToValueAtTime(0.06, now + index * 0.05 + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.05 + 1.2);
+      
+      osc.connect(gainNode);
+      gainNode.connect(this.ctx.destination);
+      osc.start(now + index * 0.05);
+      osc.stop(now + index * 0.05 + 1.2);
+    });
+  },
+
+  // Synthesize a soft low-frequency thunder rumble for incorrect answers
+  playThunder() {
+    this.init();
+    if (!this.ctx || this.isMuted) return;
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+
+    const now = this.ctx.currentTime;
+    const duration = 1.2;
+    const bufferSize = this.ctx.sampleRate * duration;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    let lastOut = 0.0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      // Create brown noise via filtering
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+
+    const noiseNode = this.ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(150, now);
+    filter.frequency.exponentialRampToValueAtTime(35, now + duration);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.15);
+    gain.gain.linearRampToValueAtTime(0.12, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    noiseNode.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noiseNode.start(now);
+    noiseNode.stop(now + duration);
   }
 };

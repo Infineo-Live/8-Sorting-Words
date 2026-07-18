@@ -111,6 +111,12 @@ const GameManager = {
       return;
     }
 
+    // Clear any active idle sparkle loops
+    if (this.idleSparkleInterval) {
+      clearInterval(this.idleSparkleInterval);
+      this.idleSparkleInterval = null;
+    }
+
     this.attempts = 0;
     this.isInputActive = false;
     VisualManager.shivaReset();
@@ -124,7 +130,6 @@ const GameManager = {
     this.stepShivaSpeaks();
   },
 
-  // Step 1: Shiva Speaks (Display full sentence in clouds)
   // Step 1: Shiva Speaks (Display sentence with blank placeholder immediately)
   stepShivaSpeaks() {
     const teaching = TEACHINGS[this.currentTeachingIndex];
@@ -134,11 +139,13 @@ const GameManager = {
     this.sentenceContainer.classList.remove('hidden');
 
     // Create cloud elements for each word, leaving target blank
+    const cloudsArray = [];
     words.forEach((word, idx) => {
       const cloud = document.createElement('div');
       cloud.className = 'word-cloud';
       cloud.dataset.index = idx;
-      cloud.style.animationDelay = `${idx * 100}ms`;
+      cloud.style.opacity = '0';
+      cloud.style.pointerEvents = 'none';
       
       const cleaned = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
       
@@ -153,12 +160,155 @@ const GameManager = {
       }
 
       this.sentenceContainer.appendChild(cloud);
+      cloudsArray.push(cloud);
     });
 
-    // Directly transition to Vishnu guides and options loading after a brief fade-in (600ms)
+    // Helper to spawn magical sparkles
+    const createSparkles = (x, y, count = 10) => {
+      for (let i = 0; i < count; i++) {
+        const sparkle = document.createElement('span');
+        sparkle.className = 'magical-sparkle';
+        const size = Math.random() * 8 + 4;
+        sparkle.style.width = `${size}px`;
+        sparkle.style.height = `${size}px`;
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 60 + 30;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+        
+        sparkle.style.setProperty('--tx', `${tx}px`);
+        sparkle.style.setProperty('--ty', `${ty}px`);
+        sparkle.style.animationDelay = `${Math.random() * 80}ms`;
+        
+        this.sentenceContainer.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 900);
+      }
+    };
+
+    // Calculate layout coordinates after browser rendering pass
     setTimeout(() => {
-      this.stepVishnuGuides();
-    }, 600);
+      const containerRect = this.sentenceContainer.getBoundingClientRect();
+      const cloudRects = cloudsArray.map(c => c.getBoundingClientRect());
+
+      // Timing helper for varied natural speeds (Disney/Pixar style)
+      const getDuration = (idx) => {
+        if (idx === 0) return 2.4; // First cloud is slow and floaty
+        if (idx === 1) return 1.9;
+        if (idx === 2) return 1.8;
+        if (idx === 3) return 1.7;
+        if (idx === 4) return 1.6;
+        return 1.5; // Default for subsequent clouds
+      };
+
+      // Position First Cloud off-screen to the left using translate3d
+      const firstRect = cloudRects[0];
+      const firstOffsetX = -firstRect.left - 350; // Off-screen left
+      cloudsArray[0].style.setProperty('--first-start-x', `${firstOffsetX}px`);
+      cloudsArray[0].style.setProperty('--first-start-y', `0px`);
+      cloudsArray[0].style.transform = `translate3d(${firstOffsetX}px, 0px, 0) scale(0.96) rotate(-1.5deg)`;
+      cloudsArray[0].style.opacity = '0'; // Keyframe animation handles fade-in
+
+      // Position all subsequent clouds directly behind their previous neighbor using translate3d
+      for (let idx = 1; idx < cloudsArray.length; idx++) {
+        const prevRect = cloudRects[idx - 1];
+        const currRect = cloudRects[idx];
+
+        const prevCenterX = (prevRect.left + prevRect.right) / 2 - containerRect.left;
+        const prevCenterY = (prevRect.top + prevRect.bottom) / 2 - containerRect.top;
+
+        const currCenterX = (currRect.left + currRect.right) / 2 - containerRect.left;
+        const currCenterY = (currRect.top + currRect.bottom) / 2 - containerRect.top;
+
+        const offsetX = prevCenterX - currCenterX;
+        const offsetY = prevCenterY - currCenterY;
+
+        cloudsArray[idx].style.setProperty('--start-x', `${offsetX}px`);
+        cloudsArray[idx].style.setProperty('--start-y', `${offsetY}px`);
+        cloudsArray[idx].style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(0.95) rotate(-1deg)`;
+        cloudsArray[idx].style.opacity = '0';
+      }
+
+      // Trigger first cloud float entrance (2.4 seconds)
+      setTimeout(() => {
+        cloudsArray[0].style.animation = 'firstCloudEntrance 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+        cloudsArray[0].style.opacity = '1';
+
+        // Real-time sparkle tracker along its path
+        let sparkleInterval = setInterval(() => {
+          const rect = cloudsArray[0].getBoundingClientRect();
+          const x = (rect.left + rect.right) / 2 - containerRect.left;
+          const y = (rect.top + rect.bottom) / 2 - containerRect.top;
+          createSparkles(x, y, 2);
+        }, 100);
+        
+        setTimeout(() => clearInterval(sparkleInterval), 2400);
+      }, 50);
+
+      // Start sequential reveal after first cloud settles (2.4s)
+      setTimeout(() => {
+        let idx = 1;
+        
+        const revealNext = () => {
+          if (idx >= cloudsArray.length) {
+            // End of reveal: wait for last cloud to settle, then cleanup inline styles and assign desynchronized idle floats
+            const lastDuration = getDuration(cloudsArray.length - 1) * 1000;
+            setTimeout(() => {
+              cloudsArray.forEach((cloud, cIdx) => {
+                cloud.style.transform = '';
+                cloud.style.transition = '';
+                cloud.style.opacity = '';
+                // Desynchronized float and breathe animations for every single cloud
+                const duration = 5.0 + cIdx * 0.7;
+                const delay = cIdx * -0.4;
+                cloud.style.animation = `breatheCloud${(cIdx % 4) + 1} ${duration}s ease-in-out infinite alternate ${delay}s, textGlowBreath 3s ease-in-out infinite alternate`;
+                cloud.style.pointerEvents = 'auto';
+              });
+
+              // Start idle sparkle emitter (emits golden sparks every 4 seconds)
+              if (this.idleSparkleInterval) clearInterval(this.idleSparkleInterval);
+              this.idleSparkleInterval = setInterval(() => {
+                if (!this.sentenceContainer.classList.contains('hidden')) {
+                  const activeClouds = Array.from(this.sentenceContainer.querySelectorAll('.word-cloud:not(.blank-placeholder)'));
+                  if (activeClouds.length > 0) {
+                    const randomCloud = activeClouds[Math.floor(Math.random() * activeClouds.length)];
+                    const r = randomCloud.getBoundingClientRect();
+                    const pR = this.sentenceContainer.getBoundingClientRect();
+                    const sx = (r.left + r.right) / 2 - pR.left;
+                    const sy = (r.top + r.bottom) / 2 - pR.top;
+                    createSparkles(sx, sy, 3);
+                  }
+                }
+              }, 4000);
+
+              // Transition to Vishnu guides step
+              this.stepVishnuGuides();
+            }, lastDuration + 100);
+            return;
+          }
+
+          const prevRect = cloudRects[idx - 1];
+          const prevCenterX = (prevRect.left + prevRect.right) / 2 - containerRect.left;
+          const prevCenterY = (prevRect.top + prevRect.bottom) / 2 - containerRect.top;
+
+          // Spawn sparkles behind previous cloud as new one emerges
+          createSparkles(prevCenterX, prevCenterY, 6);
+
+          const currentCloud = cloudsArray[idx];
+          currentCloud.style.opacity = '1';
+          const duration = getDuration(idx);
+          currentCloud.style.animation = `followingCloudEntrance ${duration}s cubic-bezier(0.22, 1, 0.36, 1) forwards`;
+
+          idx++;
+          setTimeout(revealNext, 300); // 300ms stagger delay (between 250-350ms)
+        };
+
+        revealNext();
+      }, 2500); // Wait 2.5s (2.4s slide + 100ms safety)
+
+    }, 50);
   },
 
   // Step 2: (Bypassed) Word Falls is no longer used, kept as empty stub
@@ -238,8 +388,27 @@ const GameManager = {
       this.isInputActive = false;
       this.optionsContainer.classList.remove('active');
       
-      // Glow clicked option
-      element.classList.add('glowing');
+      // Play soft magical chime
+      SoundManager.playCorrectChime();
+
+      // Add success styles and animate
+      element.classList.add('correct-success');
+      const cloudChild = element.querySelector('.option-cloud');
+      if (cloudChild) {
+        cloudChild.classList.add('correct-success-cloud');
+      }
+
+      // Create a subtle expanding halo behind the cloud
+      const halo = document.createElement('div');
+      halo.className = 'magical-halo';
+      element.appendChild(halo);
+
+      // Burst golden sparkles outward from the cloud center
+      const rect = element.getBoundingClientRect();
+      const parentRect = this.container.getBoundingClientRect();
+      const cx = rect.left - parentRect.left + rect.width / 2;
+      const cy = rect.top - parentRect.top + rect.height / 2;
+      this.createSuccessSparkles(cx, cy);
 
       // Award Score based on attempt
       let pointsAwarded = 0;
@@ -249,71 +418,87 @@ const GameManager = {
 
       this.score += pointsAwarded;
 
-      // Animate returning to sentence along a Bezier curve
-      this.animateCloudToSentence(element, teaching.missingWord, () => {
-        this.updateScoreboard();
+      // Hold success animation for 600ms before moving to sentence
+      setTimeout(() => {
+        // Animate returning to sentence along a Bezier curve
+        this.animateCloudToSentence(element, teaching.missingWord, () => {
+          this.updateScoreboard();
 
-        // Restored visual reactions
-        VisualManager.shivaSmile();
-        VisualManager.vishnuNod();
-        VisualManager.hideVishnuSpeech();
+          // Restored visual reactions
+          VisualManager.shivaSmile();
+          VisualManager.vishnuNod();
+          VisualManager.hideVishnuSpeech();
 
-        // Show floating score popup above Shiva
-        const shivaRect = document.getElementById('shiva-character').getBoundingClientRect();
-        const popupX = (shivaRect.left + shivaRect.width / 2) - containerRect.left;
-        const popupY = shivaRect.top - containerRect.top - 40;
-        VisualManager.showFloatingScore(pointsAwarded, popupX, popupY);
+          // Show floating score popup above Shiva
+          const shivaRect = document.getElementById('shiva-character').getBoundingClientRect();
+          const popupX = (shivaRect.left + shivaRect.width / 2) - containerRect.left;
+          const popupY = shivaRect.top - containerRect.top - 40;
+          VisualManager.showFloatingScore(pointsAwarded, popupX, popupY);
 
-        // Glow the entire sentence
-        const allClouds = this.sentenceContainer.querySelectorAll('.word-cloud');
-        allClouds.forEach(c => c.classList.add('glowing'));
+          // Glow the entire sentence
+          const allClouds = this.sentenceContainer.querySelectorAll('.word-cloud');
+          allClouds.forEach(c => c.classList.add('glowing'));
 
-        // Bloom a lotus
-        VisualManager.bloomLotus(this.currentTeachingIndex);
+          // Bloom a lotus
+          VisualManager.bloomLotus(this.currentTeachingIndex);
 
-        // Continue to next teaching after delay
-        setTimeout(() => {
-          this.nextTeaching();
-        }, 3000);
-      });
+          // Continue to next teaching after delay
+          setTimeout(() => {
+            this.nextTeaching();
+          }, 3000);
+        });
+      }, 650);
 
     } else {
-      // Incorrect behavior: melting cloud collapse, permanent removal, and repositioning
+      // Incorrect behavior: transform to gray storm cloud with vibration and lightning
       this.isInputActive = false;
       this.optionsContainer.classList.remove('active');
 
       this.attempts++;
 
-      // 1. Brief pause (150ms)
+      // Play soft thunder rumble
+      SoundManager.playThunder();
+
+      // Transform to storm cloud
+      element.classList.add('storm-cloud-container');
+      const cloudChild = element.querySelector('.option-cloud');
+      if (cloudChild) {
+        // Create tiny lightning flash inside the cloud
+        const flash = document.createElement('div');
+        flash.className = 'lightning-flash';
+        cloudChild.appendChild(flash);
+      }
+
+      // After 550ms: storm cloud begins dissolving and melting downward
       setTimeout(() => {
-        // 2. Start melting and dissolving animation
+        element.classList.remove('storm-cloud-container');
         element.classList.add('melting-water');
         
         // Play soft poof sound
         SoundManager.playPoof();
 
-        // Spawn dissolution particles (mist, droplets, sparkles, fragments)
+        // Spawn dissolution particles (mist, droplets, sparks, fragments)
         const rect = element.getBoundingClientRect();
-        const containerRect = this.container.getBoundingClientRect();
-        const particleX = rect.left - containerRect.left + rect.width / 2;
-        const particleY = rect.top - containerRect.top + rect.height / 2;
+        const parentRect = this.container.getBoundingClientRect();
+        const particleX = rect.left - parentRect.left + rect.width / 2;
+        const particleY = rect.top - parentRect.top + rect.height / 2;
         this.createMeltingParticles(particleX, particleY);
 
-        // 3. When the dissolve animation finishes (500ms after melt starts, 650ms total)
+        // When the dissolve/melting finishes (600ms after melt starts, 1150ms total)
         setTimeout(() => {
           const riverContainer = document.querySelector('.river-ganga-container');
           const riverRect = riverContainer.getBoundingClientRect();
           const splashX = (rect.left + rect.width / 2) - riverRect.left;
           const splashY = (rect.top + rect.height / 2) - riverRect.top + 80;
 
-          // Cinematic splash & low-volume splash audio
+          // Cinematic splash & low-volume splash audio in Ganga
           VisualManager.createCinematicSplash(splashX, splashY);
           SoundManager.playSplash();
 
-          // 4. Smoothly slide the remaining elements into their new positions
+          // Smoothly slide the remaining elements into their new positions
           this.repositionRemainingOptions(element);
 
-          // 5. Check if we should auto-complete (at 2 attempts)
+          // Check if we should auto-complete (at 2 attempts)
           if (this.attempts >= 2) {
             // Remove wrong cloud and trigger automatic restoration
             element.remove();
@@ -337,9 +522,9 @@ const GameManager = {
             }, 400);
           }
 
-        }, 500);
+        }, 600);
 
-      }, 150);
+      }, 550);
     }
   },
 
@@ -401,8 +586,8 @@ const GameManager = {
         // Remove flyer on arrival
         flyer.remove();
         
-        // Blank cloud enlarges, glows, and reveals original word
-        blank.classList.add('locked-arrival', 'glowing');
+        // Blank cloud enlarges, glows, reveals original word, and triggers golden success pulse
+        blank.classList.add('locked-arrival', 'glowing', 'filled-success-pulse');
         blank.textContent = blank.dataset.originalWord || wordText;
         
         // Play chime sound
@@ -411,7 +596,7 @@ const GameManager = {
         if (callback) callback();
 
         setTimeout(() => {
-          blank.classList.remove('locked-arrival');
+          blank.classList.remove('locked-arrival', 'filled-success-pulse');
         }, 1000);
       }
     }
@@ -501,6 +686,12 @@ const GameManager = {
     }
     this.sentenceContainer.classList.add('hidden');
     this.optionsContainer.innerHTML = '';
+
+    // Clear any active idle sparkle loops
+    if (this.idleSparkleInterval) {
+      clearInterval(this.idleSparkleInterval);
+      this.idleSparkleInterval = null;
+    }
     
     // Set visual states
     VisualManager.shivaBless();
@@ -597,9 +788,9 @@ const GameManager = {
     }
   },
 
-  // Create magical melting particle effects
+  // Create magical melting particle effects (updated for storm cloud grey-purple shades)
   createMeltingParticles(x, y) {
-    const particleCount = 24;
+    const particleCount = 28;
     const parentContainer = this.container;
 
     for (let i = 0; i < particleCount; i++) {
@@ -607,31 +798,31 @@ const GameManager = {
       p.className = 'melt-particle';
       
       const rand = Math.random();
-      if (rand < 0.3) {
-        // White mist
+      if (rand < 0.35) {
+        // Dark blue-grey storm mist
         p.style.width = `${10 + Math.random() * 14}px`;
         p.style.height = `${10 + Math.random() * 14}px`;
-        p.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
+        p.style.backgroundColor = 'rgba(75, 85, 110, 0.65)';
         p.style.borderRadius = '50%';
         p.style.filter = 'blur(1.5px)';
-      } else if (rand < 0.65) {
-        // Blue water droplet
+      } else if (rand < 0.68) {
+        // Blue-purple water droplets
         p.style.width = `${3 + Math.random() * 4}px`;
         p.style.height = `${7 + Math.random() * 7}px`;
-        p.style.backgroundColor = 'rgba(72, 202, 228, 0.75)';
+        p.style.backgroundColor = 'rgba(100, 110, 180, 0.75)';
         p.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
       } else if (rand < 0.85) {
-        // Soft gold sparkle
-        p.style.width = `${5 + Math.random() * 6}px`;
-        p.style.height = `${5 + Math.random() * 6}px`;
-        p.style.backgroundColor = '#ffd700';
+        // Tiny lightning spark
+        p.style.width = `${4 + Math.random() * 5}px`;
+        p.style.height = `${4 + Math.random() * 5}px`;
+        p.style.backgroundColor = '#a2d2ff';
         p.style.borderRadius = '50%';
-        p.style.boxShadow = '0 0 6px #ffd700, 0 0 2px #fff';
+        p.style.boxShadow = '0 0 6px #a2d2ff, 0 0 2px #fff';
       } else {
-        // Fading cloud fragment
+        // Grey storm cloud fragments
         p.style.width = `${8 + Math.random() * 10}px`;
         p.style.height = `${6 + Math.random() * 8}px`;
-        p.style.backgroundColor = 'rgba(240, 240, 240, 0.7)';
+        p.style.backgroundColor = 'rgba(90, 90, 95, 0.6)';
         p.style.borderRadius = '30% 70% 70% 30% / 50% 60% 40% 50%';
       }
 
@@ -639,6 +830,7 @@ const GameManager = {
       p.style.left = `${x}px`;
       p.style.top = `${y}px`;
       p.style.zIndex = '120';
+      p.style.willChange = 'transform, opacity';
       
       parentContainer.appendChild(p);
 
@@ -657,10 +849,9 @@ const GameManager = {
         
         // Easing trajectory
         const curX = x + dx * (progress * 12);
-        // y_cur = y_start + vy * t + 0.5 * g * t^2
         const curY = y + dy * (progress * 12) + (0.5 * 9.8 * Math.pow(progress * 1.4, 2) * 8);
 
-        p.style.transform = `translate(${curX - x}px, ${curY - y}px) scale(${1 - progress})`;
+        p.style.transform = `translate3d(${curX - x}px, ${curY - y}px, 0) scale(${1 - progress})`;
         p.style.opacity = 1 - progress;
 
         if (progress < 1) {
@@ -671,6 +862,32 @@ const GameManager = {
       }
 
       requestAnimationFrame(animateParticle);
+    }
+  },
+
+  // Success Sparkles Burst (spawns 20 high-velocity bright golden sparkles)
+  createSuccessSparkles(x, y) {
+    const parentContainer = this.container;
+    for (let i = 0; i < 22; i++) {
+      const sparkle = document.createElement('span');
+      sparkle.className = 'magical-sparkle success-sparkle';
+      const size = Math.random() * 10 + 6;
+      sparkle.style.width = `${size}px`;
+      sparkle.style.height = `${size}px`;
+      sparkle.style.left = `${x}px`;
+      sparkle.style.top = `${y}px`;
+      sparkle.style.willChange = 'transform, opacity';
+      
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 100 + 40;
+      const tx = Math.cos(angle) * distance;
+      const ty = Math.sin(angle) * distance;
+      
+      sparkle.style.setProperty('--tx', `${tx}px`);
+      sparkle.style.setProperty('--ty', `${ty}px`);
+      
+      parentContainer.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 900);
     }
   },
 
