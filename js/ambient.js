@@ -20,10 +20,18 @@ window.addEventListener('load', () => {
   const dustParticles = [];
   const petals = [];
   const birds = [];
+  const leaves = [];
+  const butterflies = [];
 
   // Spawn Controllers
   let petalSpawnTimer = 0;
   let nextPetalSpawn = Math.random() * 7000 + 8000; // Spawn every 8-15 seconds
+
+  let leafSpawnTimer = 0;
+  let nextLeafSpawn = Math.random() * 9000 + 12000;
+
+  let butterflySpawnTimer = 0;
+  let nextButterflySpawn = Math.random() * 12000 + 15000;
 
   let birdSpawnTimer = 0;
   let nextBirdSpawn = Math.random() * 10000 + 20000; // Flock every 20-30 seconds
@@ -156,6 +164,75 @@ window.addEventListener('load', () => {
     }
   }
 
+  // 4. Drifting Leaves
+  class DriftingLeaf {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = Math.random() * 500 + 524; // Start right side
+      this.y = -10; // Top
+      this.size = Math.random() * 1.5 + 2;
+      this.speedY = Math.random() * 0.15 + 0.1;
+      this.speedX = -(Math.random() * 0.2 + 0.1);
+      this.angle = Math.random() * Math.PI * 2;
+      this.spin = Math.random() * 0.04 - 0.02;
+    }
+    update(dt) {
+      const scale = dt / 16.67;
+      this.x += (this.speedX + Math.sin(time * 0.002 + this.angle) * 0.1) * scale;
+      this.y += this.speedY * scale;
+      this.angle += this.spin * scale;
+      return (this.y > 580 || this.x < -20);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle);
+      ctx.fillStyle = 'rgba(107, 142, 35, 0.6)'; // Olive green
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // 4b. Butterflies
+  class Butterfly {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = -20;
+      this.y = Math.random() * 100 + 400; // Near bottom
+      this.size = Math.random() * 1.5 + 1.5;
+      this.speedX = Math.random() * 0.1 + 0.05;
+      this.wingPhase = 0;
+      this.wingSpeed = Math.random() * 0.3 + 0.2;
+      this.offset = Math.random() * 100;
+    }
+    update(dt) {
+      const scale = dt / 16.67;
+      this.x += this.speedX * scale;
+      this.y += Math.sin(time * 0.002 + this.offset) * 0.5 * scale;
+      this.wingPhase += this.wingSpeed * scale;
+      return (this.x > 1040);
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.fillStyle = 'rgba(135, 206, 235, 0.8)'; // Light sky blue
+      const flap = Math.abs(Math.sin(this.wingPhase));
+      
+      // Draw two wings
+      ctx.beginPath();
+      ctx.ellipse(-this.size, 0, this.size * flap, this.size * 1.2, -0.3, 0, Math.PI*2);
+      ctx.ellipse(this.size, 0, this.size * flap, this.size * 1.2, 0.3, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
   // 5. Ambient Dust Particles (very tiny, warm golden, slow floating, very low opacity)
   class AmbientDust {
     constructor() {
@@ -269,6 +346,30 @@ window.addEventListener('load', () => {
       } else {
         birds[i].draw();
       }
+    }
+
+    // Leaves
+    leafSpawnTimer += dt;
+    if (leafSpawnTimer > nextLeafSpawn) {
+      leafSpawnTimer = 0;
+      nextLeafSpawn = Math.random() * 9000 + 12000;
+      leaves.push(new DriftingLeaf());
+    }
+    for (let i = leaves.length - 1; i >= 0; i--) {
+      if (leaves[i].update(dt)) leaves.splice(i, 1);
+      else leaves[i].draw();
+    }
+
+    // Butterflies
+    butterflySpawnTimer += dt;
+    if (butterflySpawnTimer > nextButterflySpawn) {
+      butterflySpawnTimer = 0;
+      nextButterflySpawn = Math.random() * 12000 + 15000;
+      butterflies.push(new Butterfly());
+    }
+    for (let i = butterflies.length - 1; i >= 0; i--) {
+      if (butterflies[i].update(dt)) butterflies.splice(i, 1);
+      else butterflies[i].draw();
     }
 
     requestAnimationFrame(tick);

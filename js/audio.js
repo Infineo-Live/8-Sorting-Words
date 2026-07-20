@@ -6,6 +6,65 @@ const SoundManager = {
   bgMusic: null,
   isMuted: false,
   fadeInterval: null,
+  currentNarration: null,
+  baseBgVolume: 0.25,
+  duckedBgVolume: 0.25 * 0.25, // 25% of normal volume
+  narrationCount: 0,
+
+  // Play narration audio for the completed sentence
+  playNarration(audioPath, onEndedCallback) {
+    // Stop any currently playing narration
+    if (this.currentNarration) {
+      this.currentNarration.pause();
+      this.currentNarration.currentTime = 0;
+      this.narrationCount = Math.max(0, this.narrationCount - 1);
+    }
+
+    if (!audioPath) {
+      if (onEndedCallback) onEndedCallback();
+      return;
+    }
+
+    this.narrationCount++;
+    if (this.narrationCount === 1) {
+      this.fadeToVolume(this.duckedBgVolume, 400); // Duck background music
+    }
+
+    this.currentNarration = new Audio(audioPath);
+    
+    if (this.isMuted) {
+      this.currentNarration.volume = 0;
+    }
+
+    this.currentNarration.onended = () => {
+      this.currentNarration = null;
+      this.narrationCount = Math.max(0, this.narrationCount - 1);
+      if (this.narrationCount === 0) {
+        this.fadeToVolume(this.baseBgVolume, 800); // Restore background music
+      }
+      if (onEndedCallback) onEndedCallback();
+    };
+    
+    this.currentNarration.onerror = () => {
+      console.warn(`Narration file missing or failed to load: ${audioPath}`);
+      this.currentNarration = null;
+      this.narrationCount = Math.max(0, this.narrationCount - 1);
+      if (this.narrationCount === 0) {
+        this.fadeToVolume(this.baseBgVolume, 800);
+      }
+      if (onEndedCallback) onEndedCallback();
+    };
+
+    this.currentNarration.play().catch(e => {
+      console.warn('Narration playback prevented:', e);
+      this.currentNarration = null;
+      this.narrationCount = Math.max(0, this.narrationCount - 1);
+      if (this.narrationCount === 0) {
+        this.fadeToVolume(this.baseBgVolume, 800);
+      }
+      if (onEndedCallback) onEndedCallback();
+    });
+  },
 
   // Initialize Audio Context on first user interaction to bypass browser autoplay blocks
   init() {
@@ -65,7 +124,8 @@ const SoundManager = {
     // Attempt to play
     this.bgMusic.play().then(() => {
       if (!this.isMuted) {
-        this.fadeIn(0.25, 2000); // Fade in to 25% volume over 2.0s
+        let target = this.narrationCount > 0 ? this.duckedBgVolume : this.baseBgVolume;
+        this.fadeToVolume(target, 2000); // Fade in over 2.0s
       }
     }).catch(err => {
       // Audio autoplay policy is handled by startOnInteraction event listener
@@ -80,7 +140,7 @@ const SoundManager = {
 
     if (this.isMuted) {
       // Fade out BGM, then pause
-      this.fadeOut(2000, () => {
+      this.fadeToVolume(0, 2000, () => {
         if (this.isMuted && this.bgMusic) {
           this.bgMusic.pause();
         }
@@ -88,24 +148,29 @@ const SoundManager = {
     } else {
       // Resume and fade in BGM
       if (this.bgMusic) {
+        let target = this.narrationCount > 0 ? this.duckedBgVolume : this.baseBgVolume;
         if (this.bgMusic.paused) {
           this.bgMusic.play().then(() => {
-            this.fadeIn(0.25, 2000);
+            this.fadeToVolume(target, 2000);
           });
         } else {
-          this.fadeIn(0.25, 2000);
+          this.fadeToVolume(target, 2000);
         }
       }
     }
   },
 
-  fadeIn(targetVolume, durationMs) {
-    if (!this.bgMusic || this.isMuted) return;
+  fadeToVolume(targetVolume, durationMs, callback) {
+    if (!this.bgMusic || this.isMuted) {
+      if (callback) callback();
+      return;
+    }
     clearInterval(this.fadeInterval);
 
     const stepTime = 50;
-    const steps = durationMs / stepTime;
+    const steps = Math.max(1, durationMs / stepTime);
     const volumeStep = (targetVolume - this.bgMusic.volume) / steps;
+    const isFadingUp = targetVolume > this.bgMusic.volume;
 
     this.fadeInterval = setInterval(() => {
       if (!this.bgMusic) {
@@ -113,35 +178,14 @@ const SoundManager = {
         return;
       }
       let nextVol = this.bgMusic.volume + volumeStep;
-      if (nextVol >= targetVolume) {
-        this.bgMusic.volume = targetVolume;
-        clearInterval(this.fadeInterval);
-      } else {
-        this.bgMusic.volume = nextVol;
-      }
-    }, stepTime);
-  },
-
-  fadeOut(durationMs, callback) {
-    if (!this.bgMusic) return;
-    clearInterval(this.fadeInterval);
-
-    const stepTime = 50;
-    const steps = durationMs / stepTime;
-    const volumeStep = this.bgMusic.volume / steps;
-
-    this.fadeInterval = setInterval(() => {
-      if (!this.bgMusic) {
-        clearInterval(this.fadeInterval);
-        return;
-      }
-      let nextVol = this.bgMusic.volume - volumeStep;
-      if (nextVol <= 0) {
-        this.bgMusic.volume = 0;
+      let reachedTarget = isFadingUp ? (nextVol >= targetVolume) : (nextVol <= targetVolume);
+      
+      if (reachedTarget) {
+        this.bgMusic.volume = Math.max(0, Math.min(1, targetVolume));
         clearInterval(this.fadeInterval);
         if (callback) callback();
       } else {
-        this.bgMusic.volume = nextVol;
+        this.bgMusic.volume = Math.max(0, Math.min(1, nextVol));
       }
     }, stepTime);
   },

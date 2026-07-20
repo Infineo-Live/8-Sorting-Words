@@ -27,12 +27,8 @@
     const birds = [];
     const dustParticles = [];
     const lakeEmbers = [];
-    const driftingClouds = [];
-    const logoSparkles = [];
+    const lakeEmbers = [];
     const clickSparkles = [];
-
-    const cloudImg = new Image();
-    cloudImg.src = 'assets/clouds/cloud.png';
 
     const playBtn = document.getElementById('btn-begin-wisdom');
     if (playBtn) {
@@ -305,101 +301,7 @@
       }
     }
 
-    // 3.7. Drifting Sky Clouds (extremely slow horizontal cloud movement)
-    class DriftingCloud {
-      constructor() {
-        this.reset(true);
-      }
-
-      reset(init = false) {
-        this.x = init ? Math.random() * canvas.width : -400;
-        this.y = Math.random() * (canvas.height * 0.22);
-        this.width = Math.random() * 200 + 250;
-        this.height = this.width * 0.67; // 1.5 ratio
-        this.speedX = Math.random() * 0.04 + 0.02; // extremely slow movement
-        this.opacity = Math.random() * 0.12 + 0.06; // almost imperceptible
-      }
-
-      update() {
-        this.x += this.speedX;
-        if (this.x > canvas.width + 100) {
-          this.reset();
-        }
-      }
-
-      draw() {
-        ctx.save();
-        ctx.globalAlpha = this.opacity;
-        ctx.drawImage(cloudImg, this.x, this.y, this.width, this.height);
-        ctx.restore();
-      }
-    }
-
-    // 4. Tiny Floating Sparkles around the Title Logo
-    class LogoSparkle {
-      constructor() {
-        this.reset();
-      }
-
-      reset() {
-        // Calculate logo bounds relative to the contain-scaled image container
-        const container = document.querySelector('.welcome-screen-overlay');
-        let minX, maxX, minY, maxY;
-        if (container) {
-          const rect = container.getBoundingClientRect();
-          const canvasRect = canvas.getBoundingClientRect();
-          const left = rect.left - canvasRect.left;
-          const top = rect.top - canvasRect.top;
-          minX = left + rect.width * 0.25;
-          maxX = left + rect.width * 0.75;
-          minY = top + rect.height * 0.15;
-          maxY = top + rect.height * 0.55;
-        } else {
-          minX = canvas.width * 0.3;
-          maxX = canvas.width * 0.7;
-          minY = canvas.height * 0.18;
-          maxY = canvas.height * 0.58;
-        }
-
-        this.x = minX + Math.random() * (maxX - minX);
-        this.y = minY + Math.random() * (maxY - minY);
-        
-        this.size = Math.random() * 2.5 + 1.2;
-        this.maxSize = this.size;
-        this.speedY = -(Math.random() * 0.12 + 0.04); // slow rise
-        this.speedX = Math.random() * 0.08 - 0.04;
-        
-        this.opacity = 0;
-        this.maxOpacity = Math.random() * 0.5 + 0.2;
-        this.fadeSpeed = 0.005 + Math.random() * 0.005;
-        this.fadingIn = true;
-      }
-
-      update() {
-        this.y += this.speedY;
-        this.x += this.speedX;
-
-        if (this.fadingIn) {
-          this.opacity += this.fadeSpeed;
-          if (this.opacity >= this.maxOpacity) {
-            this.opacity = this.maxOpacity;
-            this.fadingIn = false;
-          }
-        } else {
-          this.opacity -= this.fadeSpeed * 0.8;
-        }
-
-        this.size = this.maxSize * (this.opacity / this.maxOpacity);
-
-        if (this.opacity <= 0) {
-          this.reset();
-        }
-      }
-
-      draw() {
-        drawStar(ctx, this.x, this.y, 4, this.size, this.size * 0.22, '#fee440', this.opacity);
-      }
-    }
+    // Removed LogoSparkle class
 
     // 5. Exploding Click Sparkles (emitted on PLAY click)
     class ClickSparkle {
@@ -442,10 +344,6 @@
       for (let i = 0; i < 15; i++) dustParticles.push(new DustParticle());
       // Lake embers
       for (let i = 0; i < 10; i++) lakeEmbers.push(new LakeEmber());
-      // Drifting sky clouds
-      for (let i = 0; i < 3; i++) driftingClouds.push(new DriftingCloud());
-      // Logo sparkles
-      for (let i = 0; i < 12; i++) logoSparkles.push(new LogoSparkle());
     }
 
     // Render loop running at 60 FPS
@@ -479,18 +377,6 @@
           lakeEmbers.forEach(e => {
             e.update();
             e.draw();
-          });
-
-          // Update & Draw Drifting Clouds
-          driftingClouds.forEach(c => {
-            c.update();
-            c.draw();
-          });
-
-          // Update & Draw Logo Sparkles
-          logoSparkles.forEach(s => {
-            s.update();
-            s.draw();
           });
         }
 

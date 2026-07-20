@@ -19,7 +19,7 @@ const GameManager = {
   sentenceContainer: document.getElementById('sentence-container'),
   optionsContainer: document.getElementById('river-options-container'),
   scoreVal: document.getElementById('score-val'),
-  finalScoreVal: document.getElementById('final-score-val'),
+  finalScoreVal: document.getElementById('final-score-num'),
   
   // Initialize Event Listeners
   init() {
@@ -89,7 +89,8 @@ const GameManager = {
     this.currentTeachingIndex = 0;
     this.score = 0;
     this.updateScoreboard();
-    VisualManager.resetLotuses();
+    this.updateScoreboard();
+    VisualManager.resetJourney();
     VisualManager.resetEndingLotus();
     VisualManager.shivaReset();
     VisualManager.vishnuReset();
@@ -140,25 +141,34 @@ const GameManager = {
 
     // Create cloud elements for each word, leaving target blank
     const cloudsArray = [];
+    const cloudClasses = ['cloud_1', 'cloud_2', 'cloud_3', 'cloud_4'];
     words.forEach((word, idx) => {
       const cloud = document.createElement('div');
-      cloud.className = 'word-cloud';
+      // Use the special cloud for the first word (index 0)
+      const bgClass = idx === 0 ? 'cloud_first' : cloudClasses[idx % cloudClasses.length];
+      cloud.className = `word-cloud ${bgClass}`;
       cloud.dataset.index = idx;
       cloud.style.opacity = '0';
       cloud.style.pointerEvents = 'none';
+      cloud.style.zIndex = words.length - idx; // First word is highest to hide subsequent clouds
+      cloud.style.setProperty('--delay', `${idx * 0.3}s`); // 300ms staggering
+      
+      const textSpan = document.createElement('span');
+      textSpan.className = 'cloud-text';
       
       const cleaned = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
       
       if (cleaned === teaching.missingWord.toLowerCase()) {
-        // Target blank placeholder (no letters, underscores, or hints)
+        // Target blank placeholder (empty text but maintains cloud shape)
         cloud.id = 'target-blank';
         cloud.classList.add('target-word', 'blank-placeholder');
-        cloud.textContent = ''; 
+        textSpan.textContent = ''; 
         cloud.dataset.originalWord = word; // Store original word (with punctuation)
       } else {
-        cloud.textContent = word;
+        textSpan.textContent = word;
       }
-
+      
+      cloud.appendChild(textSpan);
       this.sentenceContainer.appendChild(cloud);
       cloudsArray.push(cloud);
     });
@@ -188,127 +198,48 @@ const GameManager = {
       }
     };
 
-    // Calculate layout coordinates after browser rendering pass
+    // Apply staggered CSS animation delay for a cascading reveal effect
+    cloudsArray.forEach((cloud, cIdx) => {
+      // 80ms to 120ms delay is ideal; 100ms looks natural.
+      cloud.style.animation = `wordReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards`;
+      cloud.style.animationDelay = `${cIdx * 0.1}s`;
+    });
+
+    // Total reveal time = (words * 0.1s delay) + 0.6s animation duration
+    const totalRevealTime = (cloudsArray.length * 100) + 600;
+
+    // Transition to Vishnu guides step after the full sentence is gracefully revealed
     setTimeout(() => {
-      const containerRect = this.sentenceContainer.getBoundingClientRect();
-      const cloudRects = cloudsArray.map(c => c.getBoundingClientRect());
-
-      // Timing helper for varied natural speeds (Disney/Pixar style)
-      const getDuration = (idx) => {
-        if (idx === 0) return 2.4; // First cloud is slow and floaty
-        if (idx === 1) return 1.9;
-        if (idx === 2) return 1.8;
-        if (idx === 3) return 1.7;
-        if (idx === 4) return 1.6;
-        return 1.5; // Default for subsequent clouds
-      };
-
-      // Position First Cloud off-screen to the left using translate3d
-      const firstRect = cloudRects[0];
-      const firstOffsetX = -firstRect.left - 350; // Off-screen left
-      cloudsArray[0].style.setProperty('--first-start-x', `${firstOffsetX}px`);
-      cloudsArray[0].style.setProperty('--first-start-y', `0px`);
-      cloudsArray[0].style.transform = `translate3d(${firstOffsetX}px, 0px, 0) scale(0.96) rotate(-1.5deg)`;
-      cloudsArray[0].style.opacity = '0'; // Keyframe animation handles fade-in
-
-      // Position all subsequent clouds directly behind their previous neighbor using translate3d
-      for (let idx = 1; idx < cloudsArray.length; idx++) {
-        const prevRect = cloudRects[idx - 1];
-        const currRect = cloudRects[idx];
-
-        const prevCenterX = (prevRect.left + prevRect.right) / 2 - containerRect.left;
-        const prevCenterY = (prevRect.top + prevRect.bottom) / 2 - containerRect.top;
-
-        const currCenterX = (currRect.left + currRect.right) / 2 - containerRect.left;
-        const currCenterY = (currRect.top + currRect.bottom) / 2 - containerRect.top;
-
-        const offsetX = prevCenterX - currCenterX;
-        const offsetY = prevCenterY - currCenterY;
-
-        cloudsArray[idx].style.setProperty('--start-x', `${offsetX}px`);
-        cloudsArray[idx].style.setProperty('--start-y', `${offsetY}px`);
-        cloudsArray[idx].style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(0.95) rotate(-1deg)`;
-        cloudsArray[idx].style.opacity = '0';
-      }
-
-      // Trigger first cloud float entrance (2.4 seconds)
-      setTimeout(() => {
-        cloudsArray[0].style.animation = 'firstCloudEntrance 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards';
-        cloudsArray[0].style.opacity = '1';
-
-        // Real-time sparkle tracker along its path
-        let sparkleInterval = setInterval(() => {
-          const rect = cloudsArray[0].getBoundingClientRect();
-          const x = (rect.left + rect.right) / 2 - containerRect.left;
-          const y = (rect.top + rect.bottom) / 2 - containerRect.top;
-          createSparkles(x, y, 2);
-        }, 100);
+      cloudsArray.forEach((cloud, cIdx) => {
+        // Clear initial styles to hand off to CSS idle states
+        cloud.style.opacity = '';
+        cloud.style.transform = '';
         
-        setTimeout(() => clearInterval(sparkleInterval), 2400);
-      }, 50);
+        // Desynchronized float and breathe animations for every single cloud
+        const duration = 5.0 + cIdx * 0.7;
+        const delay = cIdx * -0.4;
+        cloud.style.animation = `breatheCloud${(cIdx % 4) + 1} ${duration}s ease-in-out infinite alternate ${delay}s, textGlowBreath 3s ease-in-out infinite alternate`;
+        cloud.style.pointerEvents = 'auto';
+      });
 
-      // Start sequential reveal after first cloud settles (2.4s)
-      setTimeout(() => {
-        let idx = 1;
-        
-        const revealNext = () => {
-          if (idx >= cloudsArray.length) {
-            // End of reveal: wait for last cloud to settle, then cleanup inline styles and assign desynchronized idle floats
-            const lastDuration = getDuration(cloudsArray.length - 1) * 1000;
-            setTimeout(() => {
-              cloudsArray.forEach((cloud, cIdx) => {
-                cloud.style.transform = '';
-                cloud.style.transition = '';
-                cloud.style.opacity = '';
-                // Desynchronized float and breathe animations for every single cloud
-                const duration = 5.0 + cIdx * 0.7;
-                const delay = cIdx * -0.4;
-                cloud.style.animation = `breatheCloud${(cIdx % 4) + 1} ${duration}s ease-in-out infinite alternate ${delay}s, textGlowBreath 3s ease-in-out infinite alternate`;
-                cloud.style.pointerEvents = 'auto';
-              });
-
-              // Start idle sparkle emitter (emits golden sparks every 4 seconds)
-              if (this.idleSparkleInterval) clearInterval(this.idleSparkleInterval);
-              this.idleSparkleInterval = setInterval(() => {
-                if (!this.sentenceContainer.classList.contains('hidden')) {
-                  const activeClouds = Array.from(this.sentenceContainer.querySelectorAll('.word-cloud:not(.blank-placeholder)'));
-                  if (activeClouds.length > 0) {
-                    const randomCloud = activeClouds[Math.floor(Math.random() * activeClouds.length)];
-                    const r = randomCloud.getBoundingClientRect();
-                    const pR = this.sentenceContainer.getBoundingClientRect();
-                    const sx = (r.left + r.right) / 2 - pR.left;
-                    const sy = (r.top + r.bottom) / 2 - pR.top;
-                    createSparkles(sx, sy, 3);
-                  }
-                }
-              }, 4000);
-
-              // Transition to Vishnu guides step
-              this.stepVishnuGuides();
-            }, lastDuration + 100);
-            return;
+      // Start idle sparkle emitter (emits golden sparks every 4 seconds)
+      if (this.idleSparkleInterval) clearInterval(this.idleSparkleInterval);
+      this.idleSparkleInterval = setInterval(() => {
+        if (!this.sentenceContainer.classList.contains('hidden')) {
+          const activeClouds = Array.from(this.sentenceContainer.querySelectorAll('.word-cloud:not(.blank-placeholder)'));
+          if (activeClouds.length > 0) {
+            const randomCloud = activeClouds[Math.floor(Math.random() * activeClouds.length)];
+            const r = randomCloud.getBoundingClientRect();
+            const pR = this.sentenceContainer.getBoundingClientRect();
+            const sx = (r.left + r.right) / 2 - pR.left;
+            const sy = (r.top + r.bottom) / 2 - pR.top;
+            createSparkles(sx, sy, 3);
           }
+        }
+      }, 4000);
 
-          const prevRect = cloudRects[idx - 1];
-          const prevCenterX = (prevRect.left + prevRect.right) / 2 - containerRect.left;
-          const prevCenterY = (prevRect.top + prevRect.bottom) / 2 - containerRect.top;
-
-          // Spawn sparkles behind previous cloud as new one emerges
-          createSparkles(prevCenterX, prevCenterY, 6);
-
-          const currentCloud = cloudsArray[idx];
-          currentCloud.style.opacity = '1';
-          const duration = getDuration(idx);
-          currentCloud.style.animation = `followingCloudEntrance ${duration}s cubic-bezier(0.22, 1, 0.36, 1) forwards`;
-
-          idx++;
-          setTimeout(revealNext, 300); // 300ms stagger delay (between 250-350ms)
-        };
-
-        revealNext();
-      }, 2500); // Wait 2.5s (2.4s slide + 100ms safety)
-
-    }, 50);
+      this.stepVishnuGuides();
+    }, totalRevealTime + 100);
   },
 
   // Step 2: (Bypassed) Word Falls is no longer used, kept as empty stub
@@ -322,10 +253,10 @@ const GameManager = {
     VisualManager.vishnuContemplate();
     VisualManager.focusCameraOnGanga();
 
-    // Wait for player to look at the river, then start Step 4
+    // Wait a brief 200ms pause before revealing options gracefully
     setTimeout(() => {
       this.stepPlayerRestores();
-    }, 2000);
+    }, 200);
   },
 
   // Step 4: Player Restores Wisdom (Options float in Ganga)
@@ -336,10 +267,15 @@ const GameManager = {
     const shuffledOptions = this.shuffleArray([...teaching.options]);
     this.optionsContainer.innerHTML = '';
 
-    shuffledOptions.forEach(optText => {
+    shuffledOptions.forEach((optText, idx) => {
       // Create the OptionContainer wrapper
       const container = document.createElement('div');
       container.className = 'option-container';
+      
+      // Apply staggered CSS entry animation
+      container.style.opacity = '0';
+      container.style.animation = 'optionReveal 1.2s ease-out forwards';
+      container.style.animationDelay = `${idx * 0.12}s`;
       
       // Lotus Image
       const lotus = document.createElement('img');
@@ -367,9 +303,17 @@ const GameManager = {
       this.optionsContainer.appendChild(container);
     });
 
-    // Make options clickable
-    this.optionsContainer.classList.add('active');
-    this.isInputActive = true;
+    // Make options clickable after the animation settles
+    const totalOptionRevealTime = (shuffledOptions.length * 120) + 1200;
+    setTimeout(() => {
+      Array.from(this.optionsContainer.children).forEach(child => {
+        child.style.opacity = '';
+        child.style.animation = '';
+        child.style.animationDelay = '';
+      });
+      this.optionsContainer.classList.add('active');
+      this.isInputActive = true;
+    }, totalOptionRevealTime + 100);
   },
 
   // Handle option click
@@ -439,13 +383,30 @@ const GameManager = {
           const allClouds = this.sentenceContainer.querySelectorAll('.word-cloud');
           allClouds.forEach(c => c.classList.add('glowing'));
 
-          // Bloom a lotus
-          VisualManager.bloomLotus(this.currentTeachingIndex);
+          // Show encouraging feedback
+          const encouragements = ["Wonderful!", "Excellent!", "Great Thinking!", "Shiva Smiles!", "You Chose Wisely!", "Amazing!", "Keep Learning!", "Brilliant!"];
+          const encMsg = encouragements[Math.floor(Math.random() * encouragements.length)];
+          this.showFeedbackMessage(encMsg, 'success');
 
-          // Continue to next teaching after delay
+          // Show explanation
+          if (teaching.explanation) {
+            this.showExplanation(teaching.explanation);
+          }
+
+          // Advance journey
+          VisualManager.advanceJourney(this.currentTeachingIndex);
+
+          // Wait briefly, play narration, then advance
           setTimeout(() => {
-            this.nextTeaching();
-          }, 3000);
+            SoundManager.playNarration(teaching.audio, () => {
+              // Wait about 800ms after narration finishes before advancing
+              setTimeout(() => {
+                this.hideFeedbackMessage();
+                this.hideExplanation();
+                this.nextTeaching();
+              }, 800);
+            });
+          }, 400); // 400ms delay before narration
         });
       }, 650);
 
@@ -456,8 +417,8 @@ const GameManager = {
 
       this.attempts++;
 
-      // Play soft thunder rumble
-      SoundManager.playThunder();
+      // Play soft poof sound instead of thunder
+      SoundManager.playPoof();
 
       // Transform to storm cloud
       element.classList.add('storm-cloud-container');
@@ -469,8 +430,14 @@ const GameManager = {
         cloudChild.appendChild(flash);
       }
 
+      // Show gentle supportive feedback
+      const gentleMsgs = ["Let's Try Again", "Think Carefully", "Almost There", "Wisdom Grows With Practice"];
+      const gMsg = gentleMsgs[Math.floor(Math.random() * gentleMsgs.length)];
+      this.showFeedbackMessage(gMsg, 'gentle');
+
       // After 550ms: storm cloud begins dissolving and melting downward
       setTimeout(() => {
+        this.hideFeedbackMessage();
         element.classList.remove('storm-cloud-container');
         element.classList.add('melting-water');
         
@@ -588,7 +555,9 @@ const GameManager = {
         
         // Blank cloud enlarges, glows, reveals original word, and triggers golden success pulse
         blank.classList.add('locked-arrival', 'glowing', 'filled-success-pulse');
-        blank.textContent = blank.dataset.originalWord || wordText;
+        const textSpan = blank.querySelector('.cloud-text');
+        if (textSpan) textSpan.textContent = blank.dataset.originalWord || wordText;
+        else blank.textContent = blank.dataset.originalWord || wordText;
         
         // Play chime sound
         SoundManager.playBell();
@@ -656,12 +625,27 @@ const GameManager = {
           const allClouds = this.sentenceContainer.querySelectorAll('.word-cloud');
           allClouds.forEach(c => c.classList.add('glowing'));
 
-          // Bloom a lotus
-          VisualManager.bloomLotus(this.currentTeachingIndex);
+          // Show encouraging feedback
+          const encouragements = ["Wonderful!", "Excellent!", "Great Thinking!", "Shiva Smiles!", "You Chose Wisely!", "Amazing!", "Keep Learning!", "Brilliant!"];
+          const encMsg = encouragements[Math.floor(Math.random() * encouragements.length)];
+          this.showFeedbackMessage(encMsg, 'success');
+
+          if (teaching.explanation) {
+            this.showExplanation(teaching.explanation);
+          }
+
+          // Advance journey
+          VisualManager.advanceJourney(this.currentTeachingIndex);
 
           setTimeout(() => {
-            this.nextTeaching();
-          }, 3000);
+            SoundManager.playNarration(teaching.audio, () => {
+              setTimeout(() => {
+                this.hideFeedbackMessage();
+                this.hideExplanation();
+                this.nextTeaching();
+              }, 800);
+            });
+          }, 400);
         });
       }
       
@@ -678,12 +662,22 @@ const GameManager = {
     this.loadTeaching(this.currentTeachingIndex);
   },
 
-  // Transition to Ending Screen
+    // Transition to Ending Screen
   endGame() {
     this.container.className = 'state-ending';
     if (this.screenEnding) {
       this.screenEnding.classList.remove('hidden');
     }
+    
+    // Log image path and attach error handler
+    const victoryImg = document.getElementById('wisdom-restored-img');
+    if (victoryImg) {
+      console.log('Loading Victory Image:', victoryImg.src);
+      victoryImg.onerror = () => {
+        console.error('Failed to load the wisdom restored PNG at', victoryImg.src);
+      };
+    }
+
     this.sentenceContainer.classList.add('hidden');
     this.optionsContainer.innerHTML = '';
 
@@ -698,10 +692,28 @@ const GameManager = {
     VisualManager.vishnuNamaste();
     VisualManager.focusCameraOnGanga();
 
+    // Generate Wisdom list
+    this.generateWisdomList();
+
     // Display final score
     if (this.finalScoreVal) {
       this.finalScoreVal.textContent = this.score;
     }
+
+    // Audio Sequence: Stop music, play chime, then optionally play narration
+    SoundManager.stopMusic();
+    SoundManager.playSound('chime'); // Assuming there's a chime sound
+
+    // Trigger visual celebration effects
+    if (typeof VisualManager.spawnCelebrationEffects === 'function') {
+      VisualManager.spawnCelebrationEffects();
+    }
+
+    // Show buttons after 2 seconds
+    setTimeout(() => {
+      const btns = document.getElementById('ending-buttons');
+      if (btns) btns.classList.remove('hidden');
+    }, 2000);
 
     // Bloom the giant lotus in River Ganga
     setTimeout(() => {
@@ -732,7 +744,7 @@ const GameManager = {
     VisualManager.shivaReset();
     VisualManager.vishnuReset();
     VisualManager.resetCamera();
-    VisualManager.resetLotuses();
+    VisualManager.resetJourney();
     VisualManager.resetEndingLotus();
     VisualManager.hideVishnuSpeech();
     
@@ -779,6 +791,78 @@ const GameManager = {
     setTimeout(() => {
       panel.classList.add('hidden');
     }, 500);
+  },
+
+  // UI Feedback Overlay Helpers
+  showFeedbackMessage(text, type) {
+    const box = document.getElementById('feedback-message');
+    const textEl = document.getElementById('feedback-text');
+    if (box && textEl) {
+      box.className = `feedback-message ${type}`;
+      textEl.textContent = text;
+      box.classList.remove('hidden');
+      // Trigger reflow
+      void box.offsetWidth;
+      box.classList.add('show');
+    }
+  },
+
+  hideFeedbackMessage() {
+    const box = document.getElementById('feedback-message');
+    if (box) {
+      box.classList.remove('show');
+      setTimeout(() => box.classList.add('hidden'), 500);
+    }
+  },
+
+  showExplanation(text) {
+    const box = document.getElementById('explanation-box');
+    const textEl = document.getElementById('explanation-text');
+    if (box && textEl) {
+      textEl.textContent = text;
+      box.classList.remove('hidden');
+      void box.offsetWidth;
+      box.classList.add('show');
+    }
+  },
+
+  hideExplanation() {
+    const box = document.getElementById('explanation-box');
+    if (box) {
+      box.classList.remove('show');
+      setTimeout(() => box.classList.add('hidden'), 500);
+    }
+  },
+
+  // Helper: Generate Today's Wisdom List for Ending Screen
+  generateWisdomList() {
+    const listContainer = document.getElementById('todays-wisdom-list');
+    if (!listContainer) return;
+    
+    // Clear old items except title
+    const title = listContainer.querySelector('.todays-wisdom-title');
+    listContainer.innerHTML = '';
+    if (title) listContainer.appendChild(title);
+
+    TEACHINGS.forEach(t => {
+      const item = document.createElement('div');
+      item.className = 'wisdom-item';
+      
+      const sentence = document.createElement('div');
+      sentence.className = 'wisdom-sentence';
+      // Replace missing word with actual word correctly capitalized
+      const finalWord = t.missingWord.charAt(0).toUpperCase() + t.missingWord.slice(1);
+      // For simplicity, just use the original sentence (since it's already full)
+      sentence.textContent = t.sentence;
+
+      const explanation = document.createElement('div');
+      explanation.className = 'wisdom-explanation';
+      explanation.textContent = t.explanation;
+
+      item.appendChild(sentence);
+      item.appendChild(explanation);
+      listContainer.appendChild(item);
+    });
   },
 
   // Helper: Update scoreboard

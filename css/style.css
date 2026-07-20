@@ -134,12 +134,46 @@ body {
   pointer-events: auto;
 }
 
-.game-subtitle {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  letter-spacing: 2px;
-  color: var(--color-saffron-light);
-  text-shadow: 0 2px 10px rgba(251, 133, 0, 0.4);
+/* Header Brand Logo */
+.header-left {
+  display: flex;
+  align-items: center;
+  z-index: 25;
+  pointer-events: auto;
+}
+
+.brand-logo {
+  height: clamp(30px, 4vh, 45px);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: transform 0.3s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Landing Page Brand Logo */
+.landing-company-logo {
+  position: absolute;
+  top: 15px;
+  left: 30px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+}
+
+.landing-company-logo img {
+  height: clamp(30px, 4vh, 45px);
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: transform 0.3s ease;
+}
+
+.landing-company-logo img:hover {
+  transform: scale(1.05);
 }
 
 /* Lotus Flower Progress Bar */
@@ -463,13 +497,20 @@ body {
 .blank-placeholder {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
-  color: #2c1607;
+  color: #4A2B08; /* rich dark golden-brown */
   padding: 0 clamp(10px, 1.8vw, 24px) clamp(10px, 1.5vh, 18px) clamp(10px, 1.8vw, 24px); /* Swapped to standard viewport units */
   border-radius: 0;
   border: none;
-  font-family: 'Fredoka', 'Comfortaa', 'Outfit', sans-serif;
-  font-size: clamp(20px, 2.9vw, 32px); /* Increased font size proportionally by ~15-20% */
-  font-weight: 800;
+  font-family: 'Berkshire Swash', cursive;
+  font-weight: 400;
+  font-size: clamp(28px, 2.3vw, 42px);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-align: center;
+  text-shadow:
+    0 1px 0 #FFF8DC,
+    0 2px 4px rgba(255,220,120,0.45),
+    0 0 10px rgba(255,215,120,0.25);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -478,35 +519,78 @@ body {
   will-change: transform, opacity; /* GPU Performance Optimization */
   
   /* Bevel & emboss effect with soft warm golden outer glow */
-  text-shadow:
-    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
-    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-    0 0 6px rgba(254, 228, 64, 0.5),
-    0 2px 4px rgba(44, 22, 7, 0.4);
+  /* Magical Cloud Styles */
+  .word-cloud,
+  .word-blank,
+  .blank-placeholder {
+    /* Use aspect ratio to allow auto-scaling width while maintaining proportion */
+    aspect-ratio: 1.8 / 1;
+    height: auto;
+    min-width: clamp(140px, 15vw, 180px);
     
-  width: clamp(180px, 20vw, 235px); /* Increased size using vw */
-  height: clamp(120px, 13vh, 157px); /* 1.5 aspect ratio using vh */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 -22px; /* Slight 10-15% horizontal overlap margin */
-  z-index: 2;
-  box-sizing: border-box;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 5-10% overlap */
+    margin: 0 -2vw;
+    padding: 0 35px; /* Ensures text pushes width if long */
+    
+    z-index: 2;
+    filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4)); /* Soft shadow for depth */
+    
+    /* Smooth transition for when flying into sentence */
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
   
-  /* Staggered entrance animation with failsafe opacity: 1 baseline */
+  /* The 4 custom cloud designs + special first cloud */
+  .word-cloud.cloud_first { background-image: url('../assets/clouds/first_letter_cloud.png'); }
+  .word-cloud.cloud_1 { background-image: url('../assets/clouds/cloud_1.png'); }
+  .word-cloud.cloud_2 { background-image: url('../assets/clouds/cloud_2.png'); }
+  .word-cloud.cloud_3 { background-image: url('../assets/clouds/cloud_3.png'); }
+  .word-cloud.cloud_4 { background-image: url('../assets/clouds/cloud_4.png'); }
+  
+  .cloud-text {
+    font-family: 'Berkshire Swash', cursive;
+    font-weight: 400;
+    font-size: clamp(28px, 2.3vw, 42px);
+    letter-spacing: 0.5px;
+    line-height: 1;
+    text-align: center;
+    color: #4A2B08; /* rich dark golden-brown */
+    text-shadow:
+      0 1px 0 #FFF8DC,
+      0 2px 4px rgba(255,220,120,0.45),
+      0 0 10px rgba(255,215,120,0.25);
+    z-index: 3;
+    pointer-events: none;
+  }
+  
+  .word-cloud:hover {
+    transform: scale(1.04);
+    z-index: 10;
+  }
+  
+  /* Base opacity is 1. JS manages entrance animations and sets inline opacity: 0 initially */
   opacity: 1;
-  animation: cloudEntrance 850ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes cloudEntrance {
   0% {
     opacity: 0;
-    top: 15px; /* Float up 15px */
+    transform: translateX(-100%) scale(0.95);
+  }
+  70% {
+    opacity: 1;
+    transform: translateX(3px) scale(1.0);
   }
   100% {
     opacity: 1;
-    top: 0;
+    transform: translateX(0) scale(1.0);
   }
 }
 
@@ -550,18 +634,42 @@ body {
 /* Missing Word Blank Placeholder styled as a matching cloud shape */
 .word-blank,
 .blank-placeholder {
-  opacity: 0.55;
-  filter: grayscale(1) brightness(0.9) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+  opacity: 1;
+  filter: brightness(1.15) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
   border-bottom: none;
   align-self: center;
   animation: cloudEntrance 850ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-             blankPulse 1.5s ease-in-out infinite alternate;
+             blankDivineGlow 3s ease-in-out infinite alternate;
   animation-delay: 0s, 850ms; /* Pulse starts after entrance fade-in */
 }
 
-@keyframes blankPulse {
-  0% { opacity: 0.4; }
-  100% { opacity: 0.85; }
+/* Faint golden sparkle / pulsing glow inside the empty cloud */
+@keyframes blankDivineGlow {
+  0% { 
+    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 5px rgba(254, 228, 64, 0.2)); 
+  }
+  100% { 
+    filter: brightness(1.25) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 15px rgba(254, 228, 64, 0.6)); 
+  }
+}
+
+/* Stop the breathing animation and revert to normal cloud style after correct word is placed */
+.blank-placeholder.locked-arrival,
+.blank-placeholder.glowing,
+.blank-placeholder.filled-success-pulse {
+  animation: none !important;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)); /* Normal shadow */
+}
+
+/* Fade in the text smoothly when filled */
+.blank-placeholder .cloud-text {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.blank-placeholder.locked-arrival .cloud-text,
+.blank-placeholder.glowing .cloud-text,
+.blank-placeholder.filled-success-pulse .cloud-text {
+  opacity: 1;
 }
 
 /* Subtle static vertical baseline offsets (within ±5px range) for an organic floating line */
@@ -736,7 +844,7 @@ body {
   pointer-events: none;
   z-index: 1;
   transition: opacity 0.5s ease, transform 0.5s ease;
-  margin-top: 15px; /* 12-18px gap below the cloud */
+  margin-top: clamp(2px, 0.8vh, 8px); /* Reduced gap to hover just above petals */
 }
 
 /* Warm Golden Glow Layer */
@@ -775,16 +883,19 @@ body {
 .option-cloud {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
-  color: #2c1607;
+  color: #4A2B08; /* rich dark golden-brown */
   border: none;
   box-shadow: none;
-  font-family: 'Fredoka', 'Comfortaa', 'Outfit', sans-serif;
-  font-size: clamp(14px, 2.1vw, 26px); /* Increased font size proportionally by ~15-20% */
-  font-weight: 800;
-  padding: 0 clamp(12px, 3vw, 36px) clamp(10px, 1.8vh, 18px) clamp(12px, 3vw, 36px); /* Swapped cqw/cqh to vw/vh */
+  font-family: 'Berkshire Swash', cursive;
+  font-weight: 400;
+  font-size: clamp(31px, 2.4vw, 44px);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-align: center;
+  padding: 0 clamp(13px, 3.3vw, 40px) clamp(11px, 2.2vh, 22px) clamp(13px, 3.3vw, 40px);
   border-radius: 0;
-  width: clamp(110px, 14vw, 160px); /* Swapped cqw to vw */
-  height: clamp(73px, 9.3vh, 107px); /* Swapped cqh to vh */
+  width: clamp(132px, 16.5vw, 191px);
+  height: clamp(88px, 11vh, 128px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -793,14 +904,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  will-change: transform, opacity; /* GPU Performance Optimization */
+  will-change: transform, opacity;
   
-  /* Bevel & emboss effect with soft warm golden outer glow */
   text-shadow:
-    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
-    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-    0 0 6px rgba(254, 228, 64, 0.5),
-    0 2px 4px rgba(44, 22, 7, 0.4);
+    0 1px 0 #FFF8DC,
+    0 2px 4px rgba(255,220,120,0.45),
+    0 0 10px rgba(255,215,120,0.25);
     
   transition: opacity 0.5s ease, scale 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
   animation: textGlowBreath 3s ease-in-out infinite alternate;
@@ -867,13 +976,37 @@ body {
 
 .option-container:hover {
   animation-play-state: paused;
-  transform: scale(1.15) translateY(-8px) !important;
-  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.45)) brightness(1.05);
+  transform: translateY(-8px) !important;
   z-index: 50;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* Strictly remove ALL default browser highlights, rectangles, and focus rings */
+.option-container,
+.option-container:focus,
+.option-container:active,
+.option-container:focus-visible,
+.option-container.selected,
+.option-container.glowing,
+.option-cloud,
+.option-cloud:focus,
+.option-cloud:active,
+.option-cloud:focus-visible,
+.option-cloud.selected {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 .option-container:hover .option-cloud {
   scale: 1.04; /* Slightly scale up cloud inside hovered container */
+  filter: drop-shadow(0 0 10px rgba(255,215,120,0.6))
+          drop-shadow(0 0 20px rgba(255,215,120,0.4))
+          drop-shadow(0 0 30px rgba(255,240,180,0.25)) brightness(1.08);
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
@@ -882,9 +1015,18 @@ body {
   animation-play-state: paused; /* Pause text glow breath on hover */
 }
 
+.option-container.glowing {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
 .option-container.glowing .option-cloud {
-  filter: drop-shadow(0 0 12px var(--color-gold)) brightness(1.15);
-  scale: 1.04;
+  scale: 1.05;
+  filter: drop-shadow(0 0 10px rgba(255,215,120,0.6))
+          drop-shadow(0 0 20px rgba(255,215,120,0.4))
+          drop-shadow(0 0 30px rgba(255,240,180,0.25)) brightness(1.15);
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
@@ -1158,12 +1300,11 @@ body {
   z-index: 1000;
   
   /* Layout variables for enlarged logo and overlapping play button */
-  --logo-width: clamp(494px, 78vw, 988px);
-  --logo-max-width: min(90vw, 105vh);
+  --logo-width: clamp(550px, 85vw, 1100px);
+  --logo-max-width: min(95vw, 115vh);
   --logo-height: calc(min(var(--logo-width), var(--logo-max-width)) / 1.5);
   --btn-height: 54px;
   --overlap: 8px; /* ~15% overlap of the 54px play button height */
-  
   /* Fade out over 500ms when hidden is added */
   transition: opacity 500ms ease, visibility 500ms ease !important;
 }
@@ -1180,16 +1321,7 @@ body {
   background-size: cover;
   z-index: 1;
   pointer-events: none;
-  transform: scale(1);
-  /* Very slow breeze animation simulating wind */
-  animation: backgroundBreeze 24s ease-in-out infinite alternate;
   transition: transform 500ms cubic-bezier(0.25, 1, 0.5, 1), filter 500ms cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-@keyframes backgroundBreeze {
-  0% { transform: scale(1) translate(0, 0); }
-  50% { transform: scale(1.02) translate(3px, 2px); }
-  100% { transform: scale(1) translate(0, 0); }
 }
 
 .welcome-screen-overlay.hidden::before {
@@ -1236,63 +1368,124 @@ body {
 
 /* Transparent Logo Centerpiece */
 .logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
+  top: 42%;
   left: 50%;
-  top: calc(50% - var(--btn-height) / 2 + var(--overlap) / 2);
   transform: translate(-50%, -50%);
   width: var(--logo-width);
-  max-width: var(--logo-max-width);
-  height: auto;
-  z-index: 90;
-  pointer-events: none;
-  
-  /* Entrance fade-in and scale-up, followed by slow floating cycle */
-  animation: logoEntrance 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-             logoFloat 6s ease-in-out infinite alternate 1.5s;
+  height: var(--logo-height);
+  z-index: 10;
 }
 
-/* Very soft golden shimmer sheen passing across the logo text */
-.logo-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
+.magical-logo-wrapper {
+  position: relative;
+  width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 228, 64, 0.45) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-25deg);
-  pointer-events: none;
-  z-index: 5;
-  -webkit-mask-image: url('../assets/logo.png');
-  mask-image: url('../assets/logo.png');
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  animation: logoShimmer 6.0s infinite ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes logoShimmer {
-  0% { left: -100%; }
-  22% { left: 100%; }
-  100% { left: 100%; }
+/* 
+  Magical Effects Around Logo 
+*/
+.logo-halo {
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 228, 64, 0.4) 0%, rgba(254, 228, 64, 0) 70%);
+  filter: blur(20px);
+  z-index: 1;
+  animation: divineGlow 3.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.logo-rays {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  background: repeating-conic-gradient(from 0deg, rgba(254, 228, 64, 0) 0deg, rgba(254, 228, 64, 0.15) 10deg, rgba(254, 228, 64, 0) 20deg);
+  border-radius: 50%;
+  mask-image: radial-gradient(circle, black 20%, transparent 60%);
+  -webkit-mask-image: radial-gradient(circle, black 20%, transparent 60%);
+  z-index: 2;
+  animation: rotateRays 20s linear infinite, divineGlow 3.5s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes rotateRays {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes divineGlow {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.css-sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: #fee440;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px rgba(254, 228, 64, 0.8);
+  opacity: 0;
+  animation: floatSparkle 4s ease-in-out infinite;
+}
+
+/* Position and delay sparkles randomly around the wrapper */
+.s1 { top: 20%; left: 10%; animation-delay: 0.1s; }
+.s2 { top: 80%; left: 85%; animation-delay: 1.2s; }
+.s3 { top: 15%; left: 70%; animation-delay: 0.5s; }
+.s4 { top: 70%; left: 15%; animation-delay: 2.1s; }
+.s5 { top: 50%; left: 90%; animation-delay: 1.5s; }
+.s6 { top: 90%; left: 45%; animation-delay: 3.2s; }
+.s7 { top: 10%; left: 40%; animation-delay: 2.8s; }
+.s8 { top: 40%; left: 5%; animation-delay: 0.9s; }
+.s9 { top: 85%; left: 25%; animation-delay: 1.8s; }
+.s10 { top: 30%; left: 80%; animation-delay: 2.5s; }
+
+@keyframes floatSparkle {
+  0% { opacity: 0; transform: translateY(10px) scale(0.5); }
+  50% { opacity: 1; transform: translateY(-10px) scale(1.5); }
+  100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
 }
 
 #logo-centerpiece {
   width: 100%;
   height: auto;
   display: block;
+  position: relative;
+  z-index: 4;
   
-  /* Soft golden glow breathing pulse */
-  filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.15)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-  animation: logoGlowPulse 4.5s ease-in-out infinite alternate;
+  /* Divine glow that pulses */
+  filter: drop-shadow(0 0 15px rgba(254, 228, 64, 0.5)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+  animation: divineGlow 3.5s ease-in-out infinite alternate;
 }
 
 @keyframes logoEntrance {
@@ -1325,143 +1518,94 @@ body {
 }
 
 /* Play button wrapper running slow breathing scale pulse */
+/* Play button wrapper running slow breathing scale pulse */
 .play-button-wrapper {
   position: absolute;
   left: 50%;
-  top: calc(50% + var(--logo-height) / 2 - var(--overlap) / 2);
-  width: 160px; /* Reduced Play button size by ~22% */
-  height: var(--btn-height);
+  /* Move the Play button to overlap the logo's bottom edge */
+  top: calc(42% + (var(--logo-height) / 2) - 20px);
+  width: clamp(280px, 30vw, 340px); /* Scaled to 280-340px responsive */
   transform: translate(-50%, -50%);
   z-index: 100;
   
-  /* Gentle breathing idle animation */
+  /* Ensure no background renders behind the image */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  
+  /* Gentle floating motion (2-4px up and down) and subtle scale breathing (1 -> 1.03 -> 1) */
   animation: buttonBreath 3.5s ease-in-out infinite alternate;
-  transition: transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 @keyframes buttonBreath {
-  0% { transform: translate(-50%, -50%) scale(1.00); }
-  50% { transform: translate(-50%, -50%) scale(1.03); }
-  100% { transform: translate(-50%, -50%) scale(1.00); }
+  0% { transform: translate(-50%, -50%) translateY(-3px) scale(1.00); }
+  100% { transform: translate(-50%, -50%) translateY(3px) scale(1.03); }
 }
 
 /* Soft reflection onto the water below the button */
 .button-reflection {
   position: absolute;
-  top: 125%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%) scaleY(-0.6);
-  width: 75%;
-  height: 50%;
-  background: linear-gradient(to bottom, rgba(254, 228, 64, 0.25) 0%, rgba(72, 202, 228, 0) 100%);
-  filter: blur(4px);
-  opacity: 0.45;
+  width: 60%;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(254, 228, 64, 0.4) 0%, rgba(72, 202, 228, 0) 100%);
+  filter: blur(8px);
+  opacity: 0.35;
   pointer-events: none;
   z-index: 5;
 }
 
-/* Custom premium gold-marble PLAY button */
-.btn-play-premium {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 10;
-  
-  font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  
-  /* Soft cream radial fill simulating a polished white-gold marble texture */
-  background: radial-gradient(circle at 30% 20%, #ffffff 0%, #f7f5f0 50%, #eae5d8 85%, #d4af37 100%);
-  border: 3px solid #d4af37; /* Polished gold border */
-  border-radius: 27px; /* Capsule shape fitting the smaller size */
-  cursor: pointer;
-  outline: none;
-  overflow: hidden;
-  box-sizing: border-box;
-  
-  /* Soft golden inner glow */
-  box-shadow: 
-    inset 0 0 8px rgba(254, 228, 64, 0.5),
-    0 3px 12px rgba(0, 0, 0, 0.2);
-  
-  transition: 
-    border-color 300ms ease,
-    box-shadow 300ms ease;
-}
-
-/* PLAY Text styles */
-.btn-text {
-  font-size: 1.05rem; /* Scaled down proportionally */
-  letter-spacing: 4px;
-  color: #4e342e; /* Dark brown bronze lettering */
-  margin: 0;
+/* Replaced HTML button with image button */
+.custom-play-btn {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
   padding: 0;
-  line-height: 1;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 3px rgba(212, 175, 55, 0.4);
+  margin: 0;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1), filter 300ms ease;
+  
+  /* Soft golden glow that slowly pulses */
+  filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.5));
+  animation: buttonGlowPulse 3s ease-in-out infinite alternate;
 }
 
-/* Small pink lotus emblem centered beneath the text */
-.button-lotus-emblem {
+@keyframes buttonGlowPulse {
+  0% { filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.4)); }
+  100% { filter: drop-shadow(0 0 16px rgba(254, 228, 64, 0.8)); }
+}
+
+.play-btn-image {
+  width: 100%;
+  height: auto;
   display: block;
-  width: 18px; /* Slightly scaled down */
-  height: 13px;
-  background: url('../assets/clouds/lotus.png') no-repeat center center;
-  background-size: contain;
-  margin-top: 3px;
-  pointer-events: none;
-  transition: filter 0.3s ease, transform 0.3s ease;
-}
-
-/* Sparkle sheen crossing the button every 5.5 seconds */
-.btn-play-premium::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 30%;
-  height: 200%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.5) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: rotate(30deg);
-  pointer-events: none;
-  z-index: 5;
-  animation: buttonSheen 5.5s infinite ease-in-out;
-}
-
-@keyframes buttonSheen {
-  0% { left: -60%; }
-  15% { left: 140%; }
-  100% { left: 140%; }
+  /* Ensure original aspect ratio without distortion */
+  object-fit: contain;
 }
 
 /* Button hover effects */
-.play-button-wrapper:hover {
-  transform: translate(-50%, -50%) scale(1.05) translateY(-4px) !important;
+.play-button-wrapper:hover .custom-play-btn {
+  /* Slight enlargement (about 8%) and stronger glow */
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1));
+  animation: none; /* override pulse to stay bright */
 }
 
-.play-button-wrapper:hover .btn-play-premium {
-  border-color: #ffeaa7; /* gold border becomes brighter */
-  box-shadow: 
-    inset 0 0 12px rgba(254, 228, 64, 0.75),
-    0 6px 18px rgba(212, 175, 55, 0.5);
-}
-
-.play-button-wrapper:hover .button-lotus-emblem {
-  filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.85)); /* lotus glows softly */
-  transform: scale(1.1);
-}
-
-.btn-play-premium:active {
-  transform: scale(0.97);
+/* Click animation: quick press effect spring back */
+.custom-play-btn:active {
+  transform: scale(0.95);
+  transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .welcome-screen-overlay.hidden .play-button-wrapper {
@@ -1476,16 +1620,8 @@ body {
     transform: none !important;
     animation: none !important;
   }
-  .play-button-wrapper {
-    animation: none !important;
-  }
-  .btn-play-premium {
-    animation: none !important;
-  }
-  .btn-play-premium::after {
-    animation: none !important;
-  }
-  .button-lotus-emblem {
+  .play-button-wrapper,
+  .custom-play-btn {
     animation: none !important;
   }
 }
@@ -1837,9 +1973,32 @@ body {
 }
 
 /* Continuous breathing for other clouds (fallback defaults) */
+/* Continuous breathing for other clouds (fallback defaults) */
 .word-cloud {
-  animation: breatheCloud1 5s ease-in-out infinite alternate,
-             textGlowBreath 3s ease-in-out infinite alternate;
+  animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
+             breatheCloud1 5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+             textGlowBreath 3s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
+}
+
+.word-cloud.cloud_1 { 
+  animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
+             breatheCloud1 5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
+             textGlowBreath 3s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+}
+.word-cloud.cloud_2 { 
+  animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
+             breatheCloud2 5.5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
+             textGlowBreath 3.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+}
+.word-cloud.cloud_3 { 
+  animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
+             breatheCloud3 4.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
+             textGlowBreath 2.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+}
+.word-cloud.cloud_4 { 
+  animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
+             breatheCloud4 5.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
+             textGlowBreath 3.4s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
 }
 
 /* 4 Desynchronized organic floating animations (bobbing + side drift + rotate) */
@@ -1867,17 +2026,13 @@ body {
 @keyframes textGlowBreath {
   0% {
     text-shadow:
-      -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
-      0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-      0 0 5px rgba(254, 228, 64, 0.45),
-      0 2px 4px rgba(44, 22, 7, 0.4);
+      0 0 4px rgba(255, 215, 120, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.15);
   }
   100% {
     text-shadow:
-      -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
-      0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-      0 0 10px rgba(254, 228, 64, 0.75),
-      0 2px 4px rgba(44, 22, 7, 0.4);
+      0 0 8px rgba(255, 215, 120, 0.5),
+      0 2px 4px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -2062,11 +2217,6 @@ body {
   #game-header {
     padding: 10px 15px;
     z-index: 30;
-  }
-
-  .game-subtitle {
-    font-size: 1.1rem;
-    letter-spacing: 1px;
   }
 
   .lotus-slot {
@@ -2327,53 +2477,27 @@ body {
    Cinematic Cloud Entrance Sequence
    ========================================== */
 
-/* Animated entrance for the first cloud floating from the left with vertical breeze bobbing and rotation */
-@keyframes firstCloudEntrance {
+/* Animated entrance for words: smooth slide down from top and soft fade in */
+@keyframes wordReveal {
   0% {
     opacity: 0;
-    transform: translate3d(var(--first-start-x), 0, 0) scale(0.96) rotate(-1deg);
-  }
-  35% {
-    opacity: 0.5;
-    transform: translate3d(calc(var(--first-start-x) * 0.65), -6px, 0) scale(0.97) rotate(1deg); /* Bob up */
-  }
-  70% {
-    opacity: 0.9;
-    transform: translate3d(calc(var(--first-start-x) * 0.3), 4px, 0) scale(0.985) rotate(-0.8deg); /* Bob down */
-  }
-  85% {
-    opacity: 1;
-    transform: translate3d(-5px, -2px, 0) scale(1.01) rotate(0.4deg); /* Overshoot */
-  }
-  93% {
-    transform: translate3d(2px, 1px, 0) scale(0.995) rotate(-0.2deg); /* Undershoot / Bounce */
+    transform: translateY(-40px) scale(0.96);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg); /* Soft Settle */
+    transform: translateY(0) scale(1);
   }
 }
 
-/* Animated entrance for subsequent clouds emerging from behind their predecessor with breeze bobbing and rotation */
-@keyframes followingCloudEntrance {
+/* Animated entrance for option clouds: gentle float up and fade in */
+@keyframes optionReveal {
   0% {
     opacity: 0;
-    transform: translate3d(var(--start-x), var(--start-y), 0) scale(0.95) rotate(-1deg);
-  }
-  20% {
-    opacity: 0.15; /* Emerge delay: remains faint and partially hidden for the first 20% */
-    transform: translate3d(calc(var(--start-x) * 0.8), calc(var(--start-y) * 0.8 - 2px), 0) scale(0.96) rotate(0.8deg);
-  }
-  85% {
-    opacity: 1;
-    transform: translate3d(-5px, -2px, 0) scale(1.01) rotate(-0.4deg); /* Overshoot */
-  }
-  93% {
-    transform: translate3d(2px, 1px, 0) scale(0.995) rotate(0.2deg); /* Undershoot / Bounce */
+    transform: translateY(20px) scale(0.95);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg); /* Soft Settle */
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -2413,21 +2537,18 @@ body {
 
 .option-container.correct-success .option-cloud {
   animation: correctCloudFlash 0.65s ease-in-out forwards;
-  border: 2px solid rgba(254, 228, 64, 0.8) !important;
+  border: none !important;
 }
 
 @keyframes correctCloudFlash {
   0% {
     filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.8)) brightness(1.15);
-    box-shadow: inset 0 0 15px rgba(255, 255, 255, 1);
   }
   50% {
     filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1)) brightness(1.35);
-    box-shadow: inset 0 0 30px rgba(255, 255, 255, 1);
   }
   100% {
     filter: drop-shadow(0 0 12px rgba(254, 228, 64, 0.8)) brightness(1.0);
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.6);
   }
 }
 
@@ -2539,4 +2660,421 @@ body {
   filter: blur(10px) brightness(0.6);
   transition: transform 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.6s ease, filter 0.6s ease;
   pointer-events: none;
+}
+
+/* =========================================
+   UI Polish Layout Fixes 
+   ========================================= */
+
+/* Background Layers Styling */
+.background-layers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  filter: blur(3px) brightness(0.85);
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.5); /* Vignette */
+  transition: filter 1s ease, background 1s ease;
+}
+
+/* Enlarge characters by 10% */
+#shiva-character {
+  transform: scale(1.1);
+  transform-origin: bottom center;
+}
+#vishnu-character {
+  transform: scale(1.1);
+  transform-origin: bottom center;
+}
+
+/* Answer clouds arc arrangement */
+.river-options-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10%;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: nowrap !important;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.option-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease, opacity 0.5s ease;
+}
+
+/* 4-in-a-row arc */
+.option-container:nth-child(1),
+.option-container:nth-last-child(1) {
+  transform: translateY(25px);
+}
+
+.option-container:nth-child(2),
+.option-container:nth-last-child(2) {
+  transform: translateY(8px);
+}
+
+.option-container:nth-child(3):not(:first-child):not(:last-child) {
+  transform: translateY(0);
+}
+
+.option-container:hover {
+  transform: translateY(-10px) scale(1.05) !important;
+  z-index: 10;
+}
+
+/* Cloud base styling (just in case they were lost in git checkout) */
+.word-cloud,
+.word-blank,
+.blank-placeholder {
+  background: url('../assets/clouds/cloud.png') no-repeat center center;
+  background-size: 100% 100%;
+  color: #2c1607;
+  padding: 10px 24px;
+  font-family: 'Fredoka', 'Comfortaa', 'Outfit', sans-serif;
+  font-size: clamp(20px, 2.9vw, 32px);
+  font-weight: 800;
+  text-shadow:
+    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
+    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
+    0 0 6px rgba(254, 228, 64, 0.5),
+    0 2px 4px rgba(44, 22, 7, 0.4);
+  width: clamp(180px, 20vw, 235px);
+  height: clamp(120px, 13vh, 157px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 -22px;
+  z-index: 2;
+  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4)); /* Soft shadow for depth */
+}
+
+.word-cloud:hover {
+  scale: 1.04;
+  z-index: 10;
+}
+
+/* Journey Tracker */
+.journey-tracker {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scale(0.85); /* Centered explicitly, plus scale */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(26, 32, 44, 0.4);
+  padding: 8px 16px;
+  border-radius: 30px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.journey-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.5;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.journey-node.active {
+  opacity: 1;
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.6));
+}
+
+.node-icon {
+  font-size: 1.2rem;
+}
+
+.node-label {
+  font-size: 0.6rem;
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-top: 2px;
+}
+
+.journey-path {
+  width: 20px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.journey-node.active ~ .journey-path {
+  background: rgba(255, 255, 255, 0.1); /* future path */
+}
+/* --- CINEMATIC ENDING SCREEN --- */
+.screen-overlay.cinematic-ending {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  flex-direction: column;
+}
+
+.cinematic-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  padding-top: 20vh; /* ~20% from the top */
+  z-index: 10;
+}
+
+.wisdom-restored-img {
+  width: clamp(300px, 60vw, 1000px); /* 55-65% of screen width */
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  image-rendering: auto; /* Ensure high-DPI crisp rendering */
+  animation: cinematicFadeIn 1s ease-out forwards, floatPulse 6s ease-in-out infinite alternate 1s;
+}
+
+.final-score-float {
+  margin-top: -120px;
+  text-align: center;
+  opacity: 0;
+  animation: cinematicFadeIn 2s ease-out 1s forwards;
+  color: #F9E286;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 0 2px 4px rgba(0,0,0,0.5);
+  font-family: 'Cinzel', serif;
+}
+
+.final-score-float .score-title {
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.final-score-float .score-stars {
+  font-size: clamp(14px, 1.5vw, 20px);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.final-score-float .score-value {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 800;
+}
+
+.ending-buttons {
+  margin-top: 50px;
+  display: flex;
+  gap: 20px;
+  opacity: 0;
+  /* JS will remove hidden and trigger fade in */
+  transition: opacity 1s ease-in;
+}
+
+.ending-buttons:not(.hidden) {
+  opacity: 1;
+}
+
+.magical-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #F9E286;
+  padding: 12px 30px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(16px, 1.8vw, 24px);
+  font-weight: 700;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2), inset 0 0 10px rgba(255, 215, 0, 0.1);
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.magical-btn:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 215, 0, 0.8);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 15px rgba(255, 215, 0, 0.2);
+  color: #FFF;
+}
+
+.ending-effects-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Animations */
+@keyframes cinematicFadeIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatPulse {
+  0% { transform: translateY(0); filter: drop-shadow(0 0 8px rgba(255,215,0,0.25)); }
+  100% { transform: translateY(-3px); filter: drop-shadow(0 0 15px rgba(255,215,0,0.45)); }
+}
+
+/* Celebration particles generated in visual.js */
+.celebration-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,240,150,1) 0%, rgba(255,200,0,0) 70%);
+  animation: floatUpSlow linear forwards;
+}
+
+.celebration-petal {
+  position: absolute;
+  background: url(''../assets/clouds/lotus.png'') no-repeat center center;
+  background-size: contain;
+  animation: driftDown linear forwards;
+}
+
+@keyframes floatUpSlow {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+}
+
+@keyframes driftDown {
+  0% { transform: translateY(-10vh) rotate(0deg) scale(0.2); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(110vh) rotate(360deg) scale(0.4); opacity: 0; }
+}
+
+
+.state-ending .game-bg {
+  filter: blur(3px) brightness(0.75);
+  transition: filter 2s ease;
+}
+
+.state-ending .scene-content {
+  filter: blur(2px) brightness(0.8);
+  transition: filter 2s ease;
+}
+
+/* ==========================================
+   Ambient Environment Animations (Mount Kailash)
+   ========================================== */
+
+.ambient-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-layer { z-index: 0; }
+.fg-layer { z-index: 10; }
+
+.ambient-firefly {
+  position: absolute;
+  border-radius: 50%;
+  background: #fee440;
+  box-shadow: 0 0 6px 2px rgba(254, 228, 64, 0.6);
+  pointer-events: none;
+  opacity: 0;
+  animation: fireflyWander var(--dur) ease-in-out infinite alternate, fireflyBlink var(--blink) ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes fireflyWander {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(var(--tx), var(--ty)); }
+}
+
+@keyframes fireflyBlink {
+  0% { opacity: 0.1; scale: 0.8; }
+  100% { opacity: 0.9; scale: 1.2; }
+}
+
+.ambient-bird {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  opacity: 0.7;
+  pointer-events: none;
+  animation: birdFly var(--dur) linear forwards;
+  will-change: transform;
+}
+.ambient-bird svg {
+  width: 100%;
+  height: 100%;
+  fill: #1a202c; /* dark silhouette */
+}
+
+@keyframes birdFly {
+  0% { transform: translate(-50px, var(--sy)) scale(var(--s)); opacity: 0; }
+  10% { opacity: var(--op); }
+  90% { opacity: var(--op); }
+  100% { transform: translate(110vw, var(--ey)) scale(var(--s)); opacity: 0; }
+}
+
+.ambient-leaf {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #2d6a4f;
+  border-radius: 0 50% 0 50%;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: leafDrift var(--dur) linear forwards, leafSpin var(--spin) ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes leafDrift {
+  0% { transform: translate(var(--sx), -20px); opacity: 0; }
+  10% { opacity: var(--op); }
+  90% { opacity: var(--op); }
+  100% { transform: translate(var(--ex), 110vh); opacity: 0; }
+}
+@keyframes leafSpin {
+  0% { rotate: -30deg; }
+  100% { rotate: 60deg; }
+}
+
+/* Lotuses Bobbing & Glow */
+.lotus-flower-svg {
+  animation: lotusBob 4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.3));
+}
+@keyframes lotusBob {
+  0% { transform: translateY(0) rotate(-1deg); filter: drop-shadow(0 0 3px rgba(254, 228, 64, 0.2)); }
+  100% { transform: translateY(-4px) rotate(1deg); filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.5)); }
+}
+
+/* Character Breathing Glow */
+.character {
+  animation: divineBreath 6s ease-in-out infinite alternate;
+}
+@keyframes divineBreath {
+  0% { filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.15)); }
+  100% { filter: drop-shadow(0 0 25px rgba(254, 228, 64, 0.4)); }
 }
