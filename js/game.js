@@ -291,6 +291,14 @@ const GameManager = {
       const cloud = document.createElement('div');
       cloud.className = 'option-cloud';
       cloud.textContent = optText;
+
+      // Dynamic font scaling for longer words
+      let scale = 1.0;
+      if (optText.length > 5) {
+        scale = Math.max(0.60, 5 / optText.length);
+      }
+      cloud.style.setProperty('--font-scale', scale);
+
       
       // Append in layout order: Cloud -> Glow -> Lotus
       container.appendChild(cloud);
@@ -411,37 +419,24 @@ const GameManager = {
       }, 650);
 
     } else {
-      // Incorrect behavior: transform to gray storm cloud with vibration and lightning
+      // Incorrect behavior: peaceful dissolve animation
       this.isInputActive = false;
       this.optionsContainer.classList.remove('active');
 
       this.attempts++;
 
-      // Play soft poof sound instead of thunder
+      // Play soft poof sound
       SoundManager.playPoof();
 
-      // Transform to storm cloud
-      element.classList.add('storm-cloud-container');
-      const cloudChild = element.querySelector('.option-cloud');
-      if (cloudChild) {
-        // Create tiny lightning flash inside the cloud
-        const flash = document.createElement('div');
-        flash.className = 'lightning-flash';
-        cloudChild.appendChild(flash);
-      }
+      // Dim the cloud slightly
+      element.classList.add('dimmed-cloud');
 
-      // Show gentle supportive feedback
-      const gentleMsgs = ["Let's Try Again", "Think Carefully", "Almost There", "Wisdom Grows With Practice"];
-      const gMsg = gentleMsgs[Math.floor(Math.random() * gentleMsgs.length)];
-      this.showFeedbackMessage(gMsg, 'gentle');
-
-      // After 550ms: storm cloud begins dissolving and melting downward
+      // After 250ms: cloud begins dissolving and melting into water
       setTimeout(() => {
-        this.hideFeedbackMessage();
-        element.classList.remove('storm-cloud-container');
-        element.classList.add('melting-water');
+        element.classList.remove('dimmed-cloud');
+        element.classList.add('melting-water-peaceful');
         
-        // Play soft poof sound
+        // Play soft poof sound again for the dissolve
         SoundManager.playPoof();
 
         // Spawn dissolution particles (mist, droplets, sparks, fragments)
@@ -451,7 +446,7 @@ const GameManager = {
         const particleY = rect.top - parentRect.top + rect.height / 2;
         this.createMeltingParticles(particleX, particleY);
 
-        // When the dissolve/melting finishes (600ms after melt starts, 1150ms total)
+        // When the dissolve/melting finishes (850ms after melt starts, 1100ms total)
         setTimeout(() => {
           const riverContainer = document.querySelector('.river-ganga-container');
           const riverRect = riverContainer.getBoundingClientRect();
@@ -489,9 +484,9 @@ const GameManager = {
             }, 400);
           }
 
-        }, 600);
+        }, 850);
 
-      }, 550);
+      }, 250);
     }
   },
 
@@ -872,7 +867,7 @@ const GameManager = {
     }
   },
 
-  // Create magical melting particle effects (updated for storm cloud grey-purple shades)
+  // Create magical melting particle effects
   createMeltingParticles(x, y) {
     const particleCount = 28;
     const parentContainer = this.container;
@@ -882,32 +877,33 @@ const GameManager = {
       p.className = 'melt-particle';
       
       const rand = Math.random();
-      if (rand < 0.35) {
-        // Dark blue-grey storm mist
-        p.style.width = `${10 + Math.random() * 14}px`;
-        p.style.height = `${10 + Math.random() * 14}px`;
-        p.style.backgroundColor = 'rgba(75, 85, 110, 0.65)';
-        p.style.borderRadius = '50%';
-        p.style.filter = 'blur(1.5px)';
-      } else if (rand < 0.68) {
-        // Blue-purple water droplets
-        p.style.width = `${3 + Math.random() * 4}px`;
-        p.style.height = `${7 + Math.random() * 7}px`;
-        p.style.backgroundColor = 'rgba(100, 110, 180, 0.75)';
+      if (rand < 0.40) {
+        // Soft blue/cyan water droplets
+        p.style.width = `${5 + Math.random() * 8}px`;
+        p.style.height = `${8 + Math.random() * 12}px`;
+        p.style.backgroundColor = 'rgba(135, 206, 250, 0.65)';
         p.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
-      } else if (rand < 0.85) {
-        // Tiny lightning spark
-        p.style.width = `${4 + Math.random() * 5}px`;
-        p.style.height = `${4 + Math.random() * 5}px`;
-        p.style.backgroundColor = '#a2d2ff';
+        p.style.filter = 'blur(1px)';
+      } else if (rand < 0.70) {
+        // Deep blue water ripples/droplets
+        p.style.width = `${4 + Math.random() * 6}px`;
+        p.style.height = `${7 + Math.random() * 9}px`;
+        p.style.backgroundColor = 'rgba(65, 105, 225, 0.7)';
+        p.style.borderRadius = '50% 50% 50% 50% / 60% 60% 40% 40%';
+      } else if (rand < 0.90) {
+        // Tiny faint gold sparkle
+        p.style.width = `${3 + Math.random() * 4}px`;
+        p.style.height = `${3 + Math.random() * 4}px`;
+        p.style.backgroundColor = '#f9e286';
         p.style.borderRadius = '50%';
-        p.style.boxShadow = '0 0 6px #a2d2ff, 0 0 2px #fff';
+        p.style.boxShadow = '0 0 5px #f9e286';
       } else {
-        // Grey storm cloud fragments
-        p.style.width = `${8 + Math.random() * 10}px`;
-        p.style.height = `${6 + Math.random() * 8}px`;
-        p.style.backgroundColor = 'rgba(90, 90, 95, 0.6)';
-        p.style.borderRadius = '30% 70% 70% 30% / 50% 60% 40% 50%';
+        // Very soft white mist
+        p.style.width = `${10 + Math.random() * 15}px`;
+        p.style.height = `${10 + Math.random() * 15}px`;
+        p.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
+        p.style.borderRadius = '50%';
+        p.style.filter = 'blur(3px)';
       }
 
       p.style.position = 'absolute';

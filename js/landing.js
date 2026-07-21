@@ -14,13 +14,19 @@
       tabVisible = !document.hidden;
     });
 
-    // Resize canvas dynamically to match window size
+    // Resize canvas dynamically to match container size
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
     }
+    
+    const resizeObserver = new ResizeObserver(() => {
+      resizeCanvas();
+    });
+    resizeObserver.observe(canvas.parentElement || document.body);
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
 
     // Particle Collections
     const fireflies = [];

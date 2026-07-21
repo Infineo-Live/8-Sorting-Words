@@ -46,16 +46,17 @@ body {
 /* Main Container: Maintains responsive aspect-ratio boundaries */
 #game-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  max-width: none;
-  max-height: none;
-  overflow: hidden;
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  aspect-ratio: 16 / 9;
+  overflow: visible; /* Allow decorative backgrounds to bleed to viewport */
   border-radius: 0;
   box-shadow: none;
   display: flex;
   flex-direction: column;
   z-index: 1;
+  container-type: size;
+  container-name: game;
 }
 
 /* Transparent canvas overlay for lightweight particle animations */
@@ -72,11 +73,12 @@ body {
 
 /* Dedicated single background container rendering the panoramic background image */
 .game-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 100vw;
   height: 100vh;
+  transform: translate(-50%, -50%);
   background-image: url('../assets/backgrounds/background.jpg');
   background-size: cover;
   background-repeat: no-repeat;
@@ -89,13 +91,11 @@ body {
 
   /* Background transitions for smooth sharpening */
   filter: blur(0px);
-  transform: scale(1);
-  transition: filter 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: filter 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 #game-container.state-opening .game-bg {
   filter: blur(0px);
-  transform: scale(1);
 }
 
 @keyframes bgFadeIn {
@@ -143,7 +143,7 @@ body {
 }
 
 .brand-logo {
-  height: clamp(30px, 4vh, 45px);
+  height: clamp(30px, 4cqh, 45px);
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -165,7 +165,7 @@ body {
 }
 
 .landing-company-logo img {
-  height: clamp(30px, 4vh, 45px);
+  height: clamp(30px, 4cqh, 45px);
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
@@ -304,18 +304,14 @@ body {
 
 .scene-content {
   position: relative;
-  aspect-ratio: 1024 / 571;
+  width: 100cqw;
+  height: 100cqh;
+  aspect-ratio: 16 / 9;
   box-shadow: none;
   overflow: hidden;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-
-  /* Proportional responsive scaling that matches the exact image aspect-ratio within the parent height */
-  height: 100%;
-  width: auto;
-  max-width: 100%;
-  max-height: 100%;
 }
 
 
@@ -498,12 +494,12 @@ body {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
   color: #4A2B08; /* rich dark golden-brown */
-  padding: 0 clamp(10px, 1.8vw, 24px) clamp(10px, 1.5vh, 18px) clamp(10px, 1.8vw, 24px); /* Swapped to standard viewport units */
+  padding: 0 clamp(10px, 1.8cqw, 24px) clamp(10px, 1.5cqh, 18px) clamp(10px, 1.8cqw, 24px); /* Swapped to standard viewport units */
   border-radius: 0;
   border: none;
   font-family: 'Berkshire Swash', cursive;
   font-weight: 400;
-  font-size: clamp(28px, 2.3vw, 42px);
+  font-size: clamp(28px, 2.3cqw, 42px);
   letter-spacing: 0.5px;
   line-height: 1;
   text-align: center;
@@ -526,7 +522,7 @@ body {
     /* Use aspect ratio to allow auto-scaling width while maintaining proportion */
     aspect-ratio: 1.8 / 1;
     height: auto;
-    min-width: clamp(140px, 15vw, 180px);
+    min-width: clamp(140px, 15cqw, 180px);
     
     background-size: 100% 100%;
     background-position: center;
@@ -537,7 +533,7 @@ body {
     justify-content: center;
     
     /* 5-10% overlap */
-    margin: 0 -2vw;
+    margin: 0 -2cqw;
     padding: 0 35px; /* Ensures text pushes width if long */
     
     z-index: 2;
@@ -557,7 +553,7 @@ body {
   .cloud-text {
     font-family: 'Berkshire Swash', cursive;
     font-weight: 400;
-    font-size: clamp(28px, 2.3vw, 42px);
+    font-size: clamp(28px, 2.3cqw, 42px);
     letter-spacing: 0.5px;
     line-height: 1;
     text-align: center;
@@ -810,7 +806,7 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: flex-end;
-  gap: clamp(12px, 2.5vw, 36px); /* Swapped cqw to vw */
+  gap: clamp(12px, 2.5cqw, 36px);
   flex-wrap: nowrap !important; /* Never stack vertically */
   z-index: 10;
   pointer-events: none;
@@ -833,7 +829,7 @@ body {
   cursor: pointer;
   transform: translateY(0);
   transition: transform 0.3s ease, filter 0.3s ease, opacity 0.5s ease;
-  margin: 0 clamp(4px, 0.8vw, 10px); /* Swapped cqw to vw */
+  margin: 0 clamp(4px, 0.8cqw, 10px); /* Swapped cqw to cqw */
 }
 
 /* Lotus Base Layer */
@@ -844,7 +840,7 @@ body {
   pointer-events: none;
   z-index: 1;
   transition: opacity 0.5s ease, transform 0.5s ease;
-  margin-top: clamp(2px, 0.8vh, 8px); /* Reduced gap to hover just above petals */
+  margin-top: clamp(-20px, -2.5cqh, -10px); /* Pulled closer to overlap slightly with cloud */
 }
 
 /* Warm Golden Glow Layer */
@@ -888,14 +884,15 @@ body {
   box-shadow: none;
   font-family: 'Berkshire Swash', cursive;
   font-weight: 400;
-  font-size: clamp(31px, 2.4vw, 44px);
+  font-size: calc(clamp(25px, 1.9cqw, 36px) * var(--font-scale, 1));
   letter-spacing: 0.5px;
   line-height: 1;
   text-align: center;
-  padding: 0 clamp(13px, 3.3vw, 40px) clamp(11px, 2.2vh, 22px) clamp(13px, 3.3vw, 40px);
+  white-space: nowrap;
+  padding: 0 clamp(13px, 3.3cqw, 40px) clamp(11px, 2.2cqh, 22px) clamp(13px, 3.3cqw, 40px);
   border-radius: 0;
-  width: clamp(132px, 16.5vw, 191px);
-  height: clamp(88px, 11vh, 128px);
+  width: clamp(132px, 16.5cqw, 191px);
+  height: clamp(88px, 11cqh, 128px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -922,7 +919,7 @@ body {
   bottom: -5px; /* Waterline under the smaller lotus */
   left: 20%;
   right: 20%;
-  height: clamp(6px, 1.5vh, 12px); /* Swapped cqh to vh */
+  height: clamp(6px, 1.5cqh, 12px); /* Swapped cqh to cqh */
   background: radial-gradient(ellipse at center, rgba(160, 235, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 50%;
@@ -953,7 +950,7 @@ body {
   bottom: -15px; /* Shifted up relative to smaller lotus base */
   left: 30%;
   right: 30%;
-  height: clamp(8px, 2vh, 14px); /* Swapped cqh to vh */
+  height: clamp(8px, 2cqh, 14px); /* Swapped cqh to cqh */
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: contain;
   opacity: 0.12;
@@ -1286,11 +1283,11 @@ body {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible; /* changed from hidden to let background bleed */
   padding: 0;
   margin: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1300,8 +1297,8 @@ body {
   z-index: 1000;
   
   /* Layout variables for enlarged logo and overlapping play button */
-  --logo-width: clamp(550px, 85vw, 1100px);
-  --logo-max-width: min(95vw, 115vh);
+  --logo-width: clamp(550px, 85cqw, 1100px);
+  --logo-max-width: min(95cqw, 115cqh);
   --logo-height: calc(min(var(--logo-width), var(--logo-max-width)) / 1.5);
   --btn-height: 54px;
   --overlap: 8px; /* ~15% overlap of the 54px play button height */
@@ -1313,10 +1310,11 @@ body {
 .welcome-screen-overlay::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
   background: url('../assets/backgrounds/landing.jpg') no-repeat center center;
   background-size: cover;
   z-index: 1;
@@ -1325,7 +1323,7 @@ body {
 }
 
 .welcome-screen-overlay.hidden::before {
-  transform: scale(1.06) !important;
+  transform: translate(-50%, -50%) scale(1.06) !important;
   filter: brightness(1.2) !important;
 }
 
@@ -1524,7 +1522,7 @@ body {
   left: 50%;
   /* Move the Play button to overlap the logo's bottom edge */
   top: calc(42% + (var(--logo-height) / 2) - 20px);
-  width: clamp(280px, 30vw, 340px); /* Scaled to 280-340px responsive */
+  width: clamp(280px, 30cqw, 340px); /* Scaled to 280-340px responsive */
   transform: translate(-50%, -50%);
   z-index: 100;
   
@@ -2278,7 +2276,7 @@ body {
   left: 50%;
   transform: translateX(-50%) translateY(10px);
   width: max-content;
-  max-width: 90vw;
+  max-width: 90cqw;
   background: rgba(15, 23, 42, 0.7);
   /* Subtle translucent slate glass */
   border: 1.5px solid var(--color-gold);
@@ -2608,57 +2606,23 @@ body {
   }
 }
 
-/* WRONG ANSWER: Storm Cloud vibration */
-.option-container.storm-cloud-container {
+/* WRONG ANSWER: Peaceful Dimming */
+.option-container.dimmed-cloud {
   pointer-events: none;
-  animation: stormVibrate 0.55s linear infinite !important;
+  transition: filter 0.25s ease-out;
 }
 
-.option-container.storm-cloud-container .option-cloud {
-  filter: grayscale(0.85) sepia(0.2) hue-rotate(220deg) brightness(0.42) drop-shadow(0 0 12px rgba(100, 149, 237, 0.75)) !important;
-  color: #e5e5e5 !important;
-  text-shadow: 0 0 5px #000 !important;
-  transition: filter 0.3s ease, color 0.3s ease;
-  overflow: hidden;
+.option-container.dimmed-cloud .option-cloud {
+  filter: brightness(0.8) !important; /* Dim by 20% */
+  transition: filter 0.25s ease-out;
 }
 
-/* Internal lightning flicker element */
-.lightning-flash {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0);
-  pointer-events: none;
-  z-index: 5;
-  animation: lightningBolt 0.45s ease-out 2;
-}
-
-@keyframes lightningBolt {
-  0% { background: rgba(255, 255, 255, 0); }
-  8% { background: rgba(173, 216, 230, 0.8); }
-  14% { background: rgba(255, 255, 255, 0); }
-  45% { background: rgba(230, 230, 250, 0.85); }
-  55% { background: rgba(255, 255, 255, 0); }
-}
-
-/* Storm Cloud vibration */
-@keyframes stormVibrate {
-  0% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  20% { transform: translate3d(-2px, 1px, 0) rotate(-0.5deg); }
-  40% { transform: translate3d(1.5px, -1px, 0) rotate(0.5deg); }
-  60% { transform: translate3d(-1.5px, -1.5px, 0) rotate(-0.3deg); }
-  80% { transform: translate3d(2px, 1px, 0) rotate(0.3deg); }
-  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-}
-
-/* Melting storm cloud dissolving into water */
-.option-container.melting-water {
+/* Peaceful Melting into Water */
+.option-container.melting-water-peaceful {
   opacity: 0;
-  transform: translate3d(0, 110px, 0) scaleY(0.1) scaleX(0.7) !important;
-  filter: blur(10px) brightness(0.6);
-  transition: transform 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.6s ease, filter 0.6s ease;
+  transform: translateY(30px) scaleY(1.1) scaleX(0.95) !important;
+  filter: blur(5px);
+  transition: transform 0.85s ease-in, opacity 0.75s ease-in, filter 0.8s ease-in;
   pointer-events: none;
 }
 
@@ -2748,15 +2712,15 @@ body {
   color: #2c1607;
   padding: 10px 24px;
   font-family: 'Fredoka', 'Comfortaa', 'Outfit', sans-serif;
-  font-size: clamp(20px, 2.9vw, 32px);
+  font-size: clamp(21px, 3cqw, 33px);
   font-weight: 800;
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
     0 0 6px rgba(254, 228, 64, 0.5),
     0 2px 4px rgba(44, 22, 7, 0.4);
-  width: clamp(180px, 20vw, 235px);
-  height: clamp(120px, 13vh, 157px);
+  width: clamp(220px, 25cqw, 300px);
+  height: clamp(145px, 16cqh, 195px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2839,12 +2803,12 @@ body {
   justify-content: flex-start;
   width: 100%;
   height: 100%;
-  padding-top: 20vh; /* ~20% from the top */
+  padding-top: 20cqh; /* ~20% from the top */
   z-index: 10;
 }
 
 .wisdom-restored-img {
-  width: clamp(300px, 60vw, 1000px); /* 55-65% of screen width */
+  width: clamp(300px, 60cqw, 1000px); /* 55-65% of screen width */
   max-width: 100%;
   height: auto;
   object-fit: contain;
@@ -2864,19 +2828,19 @@ body {
 }
 
 .final-score-float .score-title {
-  font-size: clamp(20px, 2.5vw, 32px);
+  font-size: clamp(20px, 2.5cqw, 32px);
   font-weight: 700;
   margin-bottom: 5px;
 }
 
 .final-score-float .score-stars {
-  font-size: clamp(14px, 1.5vw, 20px);
+  font-size: clamp(14px, 1.5cqw, 20px);
   letter-spacing: 2px;
   margin-bottom: 10px;
 }
 
 .final-score-float .score-value {
-  font-size: clamp(32px, 4vw, 56px);
+  font-size: clamp(32px, 4cqw, 56px);
   font-weight: 800;
 }
 
@@ -2899,7 +2863,7 @@ body {
   color: #F9E286;
   padding: 12px 30px;
   font-family: 'Cinzel', serif;
-  font-size: clamp(16px, 1.8vw, 24px);
+  font-size: clamp(16px, 1.8cqw, 24px);
   font-weight: 700;
   border-radius: 30px;
   cursor: pointer;
@@ -2960,10 +2924,10 @@ body {
 }
 
 @keyframes driftDown {
-  0% { transform: translateY(-10vh) rotate(0deg) scale(0.2); opacity: 0; }
+  0% { transform: translateY(-10cqh) rotate(0deg) scale(0.2); opacity: 0; }
   10% { opacity: 0.8; }
   90% { opacity: 0.8; }
-  100% { transform: translateY(110vh) rotate(360deg) scale(0.4); opacity: 0; }
+  100% { transform: translateY(110cqh) rotate(360deg) scale(0.4); opacity: 0; }
 }
 
 
@@ -3034,7 +2998,7 @@ body {
   0% { transform: translate(-50px, var(--sy)) scale(var(--s)); opacity: 0; }
   10% { opacity: var(--op); }
   90% { opacity: var(--op); }
-  100% { transform: translate(110vw, var(--ey)) scale(var(--s)); opacity: 0; }
+  100% { transform: translate(110cqw, var(--ey)) scale(var(--s)); opacity: 0; }
 }
 
 .ambient-leaf {
@@ -3053,7 +3017,7 @@ body {
   0% { transform: translate(var(--sx), -20px); opacity: 0; }
   10% { opacity: var(--op); }
   90% { opacity: var(--op); }
-  100% { transform: translate(var(--ex), 110vh); opacity: 0; }
+  100% { transform: translate(var(--ex), 110cqh); opacity: 0; }
 }
 @keyframes leafSpin {
   0% { rotate: -30deg; }

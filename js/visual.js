@@ -506,7 +506,7 @@ const VisualManager = {
         star.style.width = Math.random() * 8 + 4 + 'px';
         star.style.height = star.style.width;
         star.style.left = Math.random() * 100 + '%';
-        star.style.top = 100 + Math.random() * 20 + 'vh';
+        star.style.top = 100 + Math.random() * 20 + '%';
         star.style.animationDuration = Math.random() * 3 + 3 + 's';
         layer.appendChild(star);
         setTimeout(() => { if(star.parentNode) star.remove(); }, 6000);
@@ -566,8 +566,8 @@ class AmbientManager {
     // Start somewhere in the bottom half of the screen
     const startX = Math.random() * 100;
     const startY = 50 + Math.random() * 40;
-    firefly.style.left = `${startX}vw`;
-    firefly.style.top = `${startY}vh`;
+    firefly.style.left = `${startX}%`;
+    firefly.style.top = `${startY}%`;
     
     // Target offset
     const tx = (Math.random() - 0.5) * 200;
@@ -607,8 +607,8 @@ class AmbientManager {
         bird.className = 'ambient-bird';
         bird.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22,12 c-2,-2 -5,-3 -7,-1 c-1,1 -2,2 -4,2 c-2,0 -3,-1 -4,-2 c-2,-2 -5,-1 -7,1 c1,3 4,4 6,2 c1,-1 2,-2 4,-2 c2,0 3,1 4,2 c2,2 5,1 6,-2 z"></path></svg>`;
         
-        bird.style.setProperty('--sy', `${startY + (Math.random() * 10 - 5)}vh`);
-        bird.style.setProperty('--ey', `${startY + (Math.random() * 20 - 10)}vh`);
+        bird.style.setProperty('--sy', `${startY + (Math.random() * 10 - 5)}%`);
+        bird.style.setProperty('--ey', `${startY + (Math.random() * 20 - 10)}%`);
         bird.style.setProperty('--s', `${0.4 + Math.random() * 0.4}`);
         bird.style.setProperty('--op', `${0.4 + Math.random() * 0.4}`);
         bird.style.setProperty('--dur', `${dur}s`);
@@ -626,8 +626,8 @@ class AmbientManager {
     leaf.className = 'ambient-leaf';
     
     const dur = 8 + Math.random() * 6;
-    leaf.style.setProperty('--sx', `${Math.random() * 100}vw`);
-    leaf.style.setProperty('--ex', `${Math.random() * 100}vw`);
+    leaf.style.setProperty('--sx', `${Math.random() * 100}%`);
+    leaf.style.setProperty('--ex', `${Math.random() * 100}%`);
     leaf.style.setProperty('--dur', `${dur}s`);
     leaf.style.setProperty('--spin', `${2 + Math.random() * 2}s`);
     leaf.style.setProperty('--op', `${0.4 + Math.random() * 0.4}`);

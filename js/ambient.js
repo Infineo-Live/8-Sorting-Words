@@ -7,9 +7,25 @@ window.addEventListener('load', () => {
 
   const ctx = canvas.getContext('2d');
   
-  // Logical coordinate system matching the game scene dimensions
-  canvas.width = 1024;
-  canvas.height = 571;
+  const LOGICAL_WIDTH = 1024;
+  const LOGICAL_HEIGHT = 571;
+
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    
+    ctx.scale((rect.width * dpr) / LOGICAL_WIDTH, (rect.height * dpr) / LOGICAL_HEIGHT);
+  }
+
+  const resizeObserver = new ResizeObserver(() => {
+    resizeCanvas();
+  });
+  resizeObserver.observe(canvas);
+  resizeCanvas();
 
   // State & Timing
   let lastTime = 0;
