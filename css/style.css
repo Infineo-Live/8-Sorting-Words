@@ -399,7 +399,7 @@ canvas,
   align-items: center;
   justify-content: center;
 
-  width: clamp(120px, 25cqw, 259px);
+  width: 15cqw;
   height: auto;
   aspect-ratio: 1.8 / 1;
 
