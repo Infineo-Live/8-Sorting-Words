@@ -13,6 +13,15 @@
   --color-glass-border: rgba(255, 255, 255, 0.08);
   --font-display: "Cinzel Decorative", "Playfair Display", Georgia, serif;
   --font-body: "Comfortaa", "Outfit", sans-serif;
+
+  --game-width: 100vw;
+  --game-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+    :root {
+        --game-height: 100dvh;
+    }
 }
 
 /* Reset and Base Styling */
@@ -48,10 +57,16 @@ body {
 }
 
 /* Main Container: Fullscreen */
-#game-container {
+#viewport-wrapper,
+#game-container,
+#app,
+.game-wrapper,
+.game-container,
+.screen,
+.game-screen {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: var(--game-width);
+  height: var(--game-height);
   overflow: hidden;
   border-radius: 0;
   box-shadow: none;
@@ -61,6 +76,22 @@ body {
 }
 
 /* Transparent canvas overlay for lightweight particle animations */
+canvas,
+.game-background,
+.background-image,
+.scene-background,
+.game-layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 .ambient-canvas {
   position: absolute;
   top: 0;
@@ -356,7 +387,7 @@ body {
 /* centering the continuous sentence horizontally while avoiding Shiva, Vishnu, mountains and temple. */
 .sentence-container {
   position: absolute;
-  top: clamp(1vh, 18vh, 15vh);
+  top: clamp(120px, 20vh, 220px);
   /* Positioned below header */
   left: 10%;
   right: 10%;
@@ -2878,4 +2909,84 @@ body {
   100% {
     filter: drop-shadow(0 0 25px rgba(254, 228, 64, 0.4));
   }
+}
+
+/* =========================================================
+   GLOBAL GAME VIEWPORT LOCK — DO NOT REMOVE
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden !important;
+    overscroll-behavior: none;
+    scrollbar-width: none;
+}
+
+body {
+    position: fixed !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+    overscroll-behavior: none;
+    touch-action: none;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+body *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Replace these selectors with the actual root screen selectors if different */
+#viewport-wrapper,
+#game-container,
+#app,
+.game-wrapper,
+.game-container,
+.screen,
+.game-screen,
+.start-screen,
+.landing-screen,
+.loading-screen,
+.instruction-screen,
+.gameplay-screen,
+.end-screen {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden !important;
+    overscroll-behavior: none;
 }

@@ -1,5 +1,96 @@
 // Shiva's Wisdom - Main Game Controller
 
+const SCROLL_KEYS = new Set([
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'PageUp',
+    'PageDown',
+    'Home',
+    'End',
+    ' ',
+    'Spacebar'
+]);
+
+function preventPageScroll(event) {
+    event.preventDefault();
+}
+
+function preventScrollKeys(event) {
+    const target = event.target;
+
+    const isEditable =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target?.isContentEditable;
+
+    if (isEditable) {
+        return;
+    }
+
+    if (SCROLL_KEYS.has(event.key)) {
+        event.preventDefault();
+    }
+}
+
+window.addEventListener('wheel', preventPageScroll, {
+    passive: false
+});
+
+window.addEventListener('touchmove', preventPageScroll, {
+    passive: false
+});
+
+window.addEventListener('keydown', preventScrollKeys, {
+    passive: false
+});
+
+window.addEventListener('scroll', () => {
+    window.scrollTo(0, 0);
+});
+
+function resetPagePosition() {
+    window.scrollTo(0, 0);
+
+    document.documentElement.scrollTop = 0;
+    document.documentElement.scrollLeft = 0;
+
+    document.body.scrollTop = 0;
+    document.body.scrollLeft = 0;
+}
+
+function updateGameViewport() {
+    const viewportHeight = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+
+    document.documentElement.style.setProperty(
+        '--game-height',
+        `${viewportHeight}px`
+    );
+}
+
+updateGameViewport();
+
+window.addEventListener('resize', () => {
+    updateGameViewport();
+    resetPagePosition();
+});
+window.addEventListener('orientationchange', () => {
+    updateGameViewport();
+    resetPagePosition();
+});
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+        updateGameViewport();
+        resetPagePosition();
+    });
+}
+
+
 const GameManager = {
   // Game State
   currentTeachingIndex: 0,
@@ -58,6 +149,7 @@ const GameManager = {
 
   // Transition to Instructions Screen
   showInstructions() {
+    resetPagePosition();
     this.container.className = 'state-instructions';
     if (this.screenWelcome) {
       this.screenWelcome.classList.add('hidden');
@@ -72,6 +164,7 @@ const GameManager = {
 
   // Transition to Gameplay Screen
   startGame() {
+    resetPagePosition();
     this.container.className = 'state-gameplay';
 
     // Start background music loop when user clicks PLAY
@@ -100,6 +193,7 @@ const GameManager = {
 
   // Load a teaching by index
   loadTeaching(index) {
+    resetPagePosition();
     if (index >= TEACHINGS.length) {
       this.endGame();
       return;
@@ -403,8 +497,9 @@ const GameManager = {
 
     } else {
       // Incorrect behavior: peaceful dissolve animation
-      this.isInputActive = false;
-      this.optionsContainer.classList.remove('active');
+      
+      // Fix: Disable ONLY the clicked cloud, do NOT lock global input
+      element.style.pointerEvents = 'none';
 
       this.attempts++;
 
@@ -416,6 +511,9 @@ const GameManager = {
 
       // After 250ms: cloud begins dissolving and melting into water
       setTimeout(() => {
+        // Safety check in case the element was already removed by another action
+        if (!document.body.contains(element)) return;
+
         element.classList.remove('dimmed-cloud');
         element.classList.add('melting-water-peaceful');
 
@@ -431,14 +529,18 @@ const GameManager = {
 
         // When the dissolve/melting finishes (850ms after melt starts, 1100ms total)
         setTimeout(() => {
-          const riverContainer = document.querySelector('.river-ganga-container');
-          const riverRect = riverContainer.getBoundingClientRect();
-          const splashX = (rect.left + rect.width / 2) - riverRect.left;
-          const splashY = (rect.top + rect.height / 2) - riverRect.top + 80;
+          if (!document.body.contains(element)) return;
 
-          // Cinematic splash & low-volume splash audio in Ganga
-          VisualManager.createCinematicSplash(splashX, splashY);
-          SoundManager.playSplash();
+          const riverContainer = document.querySelector('.river-ganga-container');
+          if (riverContainer) {
+            const riverRect = riverContainer.getBoundingClientRect();
+            const splashX = (rect.left + rect.width / 2) - riverRect.left;
+            const splashY = (rect.top + rect.height / 2) - riverRect.top + 80;
+
+            // Cinematic splash & low-volume splash audio in Ganga
+            VisualManager.createCinematicSplash(splashX, splashY);
+            SoundManager.playSplash();
+          }
 
           // Smoothly slide the remaining elements into their new positions
           this.repositionRemainingOptions(element);
@@ -452,7 +554,7 @@ const GameManager = {
               this.triggerAutoRestore();
             }, 400); // Small delay to let reposition finish
           } else {
-            // Wait for reposition to settle before checking option count / re-enabling input
+            // Wait for reposition to settle before checking option count
             setTimeout(() => {
               element.remove(); // Clean up from DOM after it's hidden
 
@@ -460,10 +562,8 @@ const GameManager = {
               const remainingOptions = this.optionsContainer.querySelectorAll('.option-container');
               if (remainingOptions.length <= 1) {
                 this.triggerAutoRestore();
-              } else {
-                this.isInputActive = true;
-                this.optionsContainer.classList.add('active');
               }
+              // Removed global unlock to prevent overriding valid state locks
             }, 400);
           }
 
@@ -637,6 +737,7 @@ const GameManager = {
 
   // Transition to Ending Screen
   endGame() {
+    resetPagePosition();
     this.container.className = 'state-ending';
     if (this.screenEnding) {
       this.screenEnding.classList.remove('hidden');
@@ -694,6 +795,7 @@ const GameManager = {
 
   // Restart the game completely
   restartGame() {
+    resetPagePosition();
     this.container.className = 'state-opening';
     if (this.screenWelcome) {
       this.screenWelcome.classList.remove('hidden');
