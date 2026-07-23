@@ -76,7 +76,7 @@ const VisualManager = {
   // Vishnu Speech Bubble
   showVishnuSpeech(text, duration = null) {
     if (!this.vishnuSpeech || !this.vishnuSpeechText) return;
-    
+
     this.vishnuSpeechText.textContent = text;
     this.vishnuSpeech.classList.remove('hidden');
 
@@ -509,7 +509,7 @@ const VisualManager = {
         star.style.top = 100 + Math.random() * 20 + '%';
         star.style.animationDuration = Math.random() * 3 + 3 + 's';
         layer.appendChild(star);
-        setTimeout(() => { if(star.parentNode) star.remove(); }, 6000);
+        setTimeout(() => { if (star.parentNode) star.remove(); }, 6000);
       }, Math.random() * 2000);
     }
 
@@ -523,7 +523,7 @@ const VisualManager = {
         petal.style.left = Math.random() * 100 + '%';
         petal.style.animationDuration = Math.random() * 5 + 5 + 's';
         layer.appendChild(petal);
-        setTimeout(() => { if(petal.parentNode) petal.remove(); }, 10000);
+        setTimeout(() => { if (petal.parentNode) petal.remove(); }, 10000);
       }, Math.random() * 3000);
     }
   }
@@ -534,7 +534,7 @@ class AmbientManager {
     this.bgLayer = document.getElementById('ambient-bg-layer');
     this.fgLayer = document.getElementById('ambient-fg-layer');
     this.isRunning = true;
-    
+
     // Visibility API to pause animations when tab is inactive
     document.addEventListener("visibilitychange", () => {
       this.isRunning = !document.hidden;
@@ -545,8 +545,8 @@ class AmbientManager {
 
   init() {
     // Initial batch of fireflies
-    for(let i=0; i<20; i++) this.spawnFirefly(true);
-    
+    for (let i = 0; i < 20; i++) this.spawnFirefly(true);
+
     // Ambient loops
     setInterval(() => { if (this.isRunning) this.spawnFirefly(); }, 2000);
     setInterval(() => { if (this.isRunning) this.spawnBirdFlock(); }, 20000);
@@ -554,39 +554,39 @@ class AmbientManager {
   }
 
   spawnFirefly(randomStart = false) {
-    if(!this.fgLayer || document.querySelectorAll('.ambient-firefly').length > 25) return;
-    
+    if (!this.fgLayer || document.querySelectorAll('.ambient-firefly').length > 25) return;
+
     const firefly = document.createElement('div');
     firefly.className = 'ambient-firefly';
-    
+
     const size = Math.random() * 4 + 2;
     firefly.style.width = `${size}px`;
     firefly.style.height = `${size}px`;
-    
+
     // Start somewhere in the bottom half of the screen
     const startX = Math.random() * 100;
     const startY = 50 + Math.random() * 40;
     firefly.style.left = `${startX}%`;
     firefly.style.top = `${startY}%`;
-    
+
     // Target offset
     const tx = (Math.random() - 0.5) * 200;
     const ty = (Math.random() - 0.5) * 200;
     firefly.style.setProperty('--tx', `${tx}px`);
     firefly.style.setProperty('--ty', `${ty}px`);
-    
+
     // Timing
     const dur = 4 + Math.random() * 6;
     const blink = 1 + Math.random() * 3;
     firefly.style.setProperty('--dur', `${dur}s`);
     firefly.style.setProperty('--blink', `${blink}s`);
-    
+
     if (randomStart) {
       firefly.style.animationDelay = `-${Math.random() * 5}s`;
     }
-    
+
     this.fgLayer.appendChild(firefly);
-    
+
     // Remove after some time and spawn a new one to keep the loop dynamic
     setTimeout(() => {
       if (firefly.parentNode) firefly.remove();
@@ -594,46 +594,46 @@ class AmbientManager {
   }
 
   spawnBirdFlock() {
-    if(!this.bgLayer) return;
-    
+    if (!this.bgLayer) return;
+
     const flockSize = 2 + Math.floor(Math.random() * 3);
     const startY = 10 + Math.random() * 30; // Top 10-40% of screen
     const dur = 15 + Math.random() * 10;
-    
-    for (let i=0; i<flockSize; i++) {
+
+    for (let i = 0; i < flockSize; i++) {
       setTimeout(() => {
         if (!this.isRunning) return;
         const bird = document.createElement('div');
         bird.className = 'ambient-bird';
         bird.innerHTML = `<svg viewBox="0 0 24 24"><path d="M22,12 c-2,-2 -5,-3 -7,-1 c-1,1 -2,2 -4,2 c-2,0 -3,-1 -4,-2 c-2,-2 -5,-1 -7,1 c1,3 4,4 6,2 c1,-1 2,-2 4,-2 c2,0 3,1 4,2 c2,2 5,1 6,-2 z"></path></svg>`;
-        
+
         bird.style.setProperty('--sy', `${startY + (Math.random() * 10 - 5)}%`);
         bird.style.setProperty('--ey', `${startY + (Math.random() * 20 - 10)}%`);
         bird.style.setProperty('--s', `${0.4 + Math.random() * 0.4}`);
         bird.style.setProperty('--op', `${0.4 + Math.random() * 0.4}`);
         bird.style.setProperty('--dur', `${dur}s`);
-        
+
         this.bgLayer.appendChild(bird);
-        setTimeout(() => { if(bird.parentNode) bird.remove(); }, dur * 1000);
+        setTimeout(() => { if (bird.parentNode) bird.remove(); }, dur * 1000);
       }, i * (500 + Math.random() * 1000));
     }
   }
 
   spawnLeaf() {
-    if(!this.fgLayer || document.querySelectorAll('.ambient-leaf').length > 10) return;
-    
+    if (!this.fgLayer || document.querySelectorAll('.ambient-leaf').length > 10) return;
+
     const leaf = document.createElement('div');
     leaf.className = 'ambient-leaf';
-    
+
     const dur = 8 + Math.random() * 6;
     leaf.style.setProperty('--sx', `${Math.random() * 100}%`);
     leaf.style.setProperty('--ex', `${Math.random() * 100}%`);
     leaf.style.setProperty('--dur', `${dur}s`);
     leaf.style.setProperty('--spin', `${2 + Math.random() * 2}s`);
     leaf.style.setProperty('--op', `${0.4 + Math.random() * 0.4}`);
-    
+
     this.fgLayer.appendChild(leaf);
-    
+
     setTimeout(() => {
       if (leaf.parentNode) leaf.remove();
     }, dur * 1000);

@@ -43,20 +43,17 @@ body {
   align-items: center;
 }
 
-/* Main Container: Maintains responsive aspect-ratio boundaries */
+/* Main Container: Fullscreen */
 #game-container {
   position: relative;
-  width: min(100vw, calc(100vh * 16 / 9));
-  height: min(100vh, calc(100vw * 9 / 16));
-  aspect-ratio: 16 / 9;
-  overflow: visible; /* Allow decorative backgrounds to bleed to viewport */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   border-radius: 0;
   box-shadow: none;
   display: flex;
   flex-direction: column;
   z-index: 1;
-  container-type: size;
-  container-name: game;
 }
 
 /* Transparent canvas overlay for lightweight particle animations */
@@ -121,7 +118,6 @@ body {
   justify-content: space-between;
   align-items: center;
   z-index: 20;
-  background: linear-gradient(180deg, rgba(10, 17, 40, 0.8) 0%, rgba(10, 17, 40, 0) 100%);
   opacity: 0;
   transform: translateY(-20px);
   transition: opacity 1s ease, transform 1s ease;
@@ -146,7 +142,7 @@ body {
   height: clamp(30px, 4cqh, 45px);
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   transition: transform 0.3s ease;
 }
 
@@ -168,7 +164,7 @@ body {
   height: clamp(30px, 4cqh, 45px);
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   transition: transform 0.3s ease;
 }
 
@@ -295,18 +291,15 @@ body {
   flex: 1;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
   overflow: hidden;
   background: transparent;
 }
 
 .scene-content {
   position: relative;
-  width: 100cqw;
-  height: 100cqh;
-  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: 100%;
   box-shadow: none;
   overflow: hidden;
   flex-shrink: 0;
@@ -316,7 +309,9 @@ body {
 
 
 
-/* Hide flat vector layers to reveal the new background art */
+/* Completely hide characters and unnecessary elements */
+#shiva-character,
+#vishnu-character,
 .sky-background,
 .kailash-mountains,
 .sacred-rock-container,
@@ -377,95 +372,26 @@ body {
   display: none !important;
 }
 
-#shiva-character .halo {
-  position: absolute;
-  top: 15%;
-  left: calc(50% - 35px);
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(254, 228, 64, 0.4) 60%, rgba(254, 228, 64, 0) 100%);
-  filter: blur(2px);
-  animation: haloPulse 3s ease-in-out infinite alternate;
-  z-index: -1;
-}
 
-@keyframes haloPulse {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.7;
-  }
 
-  100% {
-    transform: scale(1.1);
-    opacity: 0.95;
-  }
-}
+
 
 /* Shiva expression toggling */
-#shiva-character.state-smile .halo {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(254, 228, 64, 0.65) 50%, rgba(254, 228, 64, 0) 100%);
-  filter: blur(1px);
-  animation: haloPulse 1.5s ease-in-out infinite alternate;
+
 }
 
-#shiva-character.state-bless::after {
-  content: '';
-  position: absolute;
-  left: 45%;
-  top: 40%;
-  width: 60px;
-  height: 60px;
-  background: radial-gradient(circle, rgba(254, 228, 64, 0.95) 0%, rgba(254, 228, 64, 0.4) 40%, rgba(254, 228, 64, 0) 70%);
-  border-radius: 50%;
-  animation: blessGlow 1.5s ease-in-out infinite alternate;
-  z-index: 10;
-  filter: drop-shadow(0 0 10px var(--color-gold));
-}
 
-@keyframes blessGlow {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.7;
-  }
 
-  100% {
-    transform: scale(1.3);
-    opacity: 1.0;
-  }
-}
 
-/* Vishnu Placement (Smaller, positioned center-right) */
-#vishnu-character {
-  position: absolute;
-  left: 28%;
-  top: 44%;
-  width: 22%;
-  height: 48%;
-  z-index: 4;
-  pointer-events: none;
-  transform-origin: bottom center;
-  transition: transform 1.2s ease;
-  animation: vishnuBreathe 7s ease-in-out infinite alternate;
-}
-
-@keyframes vishnuBreathe {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-
-  100% {
-    transform: translateY(-4px) scale(1.01);
-  }
-}
 /* Spoken Sentence overlay (Step 1 & 2) */
 /* Positioned horizontally and vertically in the upper sky, */
 /* centering the continuous sentence horizontally while avoiding Shiva, Vishnu, mountains and temple. */
 .sentence-container {
   position: absolute;
-  top: 13%; /* Positioned near the top-center of the game screen (12-15% range) */
-  left: 6%;
-  right: 6%;
+  top: 32%;
+  /* Positioned lower to accommodate UI and layout */
+  left: 10%;
+  right: 10%;
   display: flex;
   flex-wrap: nowrap;
   /* Keep on a single horizontal row for natural reading flow */
@@ -473,9 +399,10 @@ body {
   align-items: center;
   z-index: 10;
   padding: 0;
-  opacity: 1 !important; /* Explicit active state opacity */
-  transition: opacity 0.5s ease;
-  
+  opacity: 1 !important;
+  /* Explicit active state opacity */
+  transition: opacity 2s ease;
+
   /* Cohesive floating animation for the entire sentence group */
   animation: sentenceFloat 7s ease-in-out infinite alternate;
 }
@@ -493,8 +420,10 @@ body {
 .blank-placeholder {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
-  color: #4A2B08; /* rich dark golden-brown */
-  padding: 0 clamp(10px, 1.8cqw, 24px) clamp(10px, 1.5cqh, 18px) clamp(10px, 1.8cqw, 24px); /* Swapped to standard viewport units */
+  color: #4A2B08;
+  /* rich dark golden-brown */
+  padding: 0 clamp(10px, 1.8vw, 24px) clamp(10px, 1.5vh, 18px) clamp(10px, 1.8vw, 24px);
+  /* Swapped to standard viewport units */
   border-radius: 0;
   border: none;
   font-family: 'Berkshire Swash', cursive;
@@ -505,15 +434,16 @@ body {
   text-align: center;
   text-shadow:
     0 1px 0 #FFF8DC,
-    0 2px 4px rgba(255,220,120,0.45),
-    0 0 10px rgba(255,215,120,0.25);
+    0 2px 4px rgba(255, 220, 120, 0.45),
+    0 0 10px rgba(255, 215, 120, 0.25);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   transition: filter 0.3s ease, opacity 0.5s ease, scale 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
   position: relative;
-  will-change: transform, opacity; /* GPU Performance Optimization */
-  
+  will-change: transform, opacity;
+  /* GPU Performance Optimization */
+
   /* Bevel & emboss effect with soft warm golden outer glow */
   /* Magical Cloud Styles */
   .word-cloud,
@@ -522,34 +452,50 @@ body {
     /* Use aspect ratio to allow auto-scaling width while maintaining proportion */
     aspect-ratio: 1.8 / 1;
     height: auto;
-    min-width: clamp(140px, 15cqw, 180px);
-    
+    min-width: clamp(120px, 15vw, 180px);
+
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
-    
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    
+
     /* 5-10% overlap */
     margin: 0 -2cqw;
-    padding: 0 35px; /* Ensures text pushes width if long */
-    
+    padding: 0 35px;
+    /* Ensures text pushes width if long */
+
     z-index: 2;
-    filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4)); /* Soft shadow for depth */
-    
+    filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4));
+    /* Soft shadow for depth */
+
     /* Smooth transition for when flying into sentence */
     transition: filter 0.3s ease, opacity 0.3s ease;
   }
-  
+
   /* The 4 custom cloud designs + special first cloud */
-  .word-cloud.cloud_first { background-image: url('../assets/clouds/first_letter_cloud.png'); }
-  .word-cloud.cloud_1 { background-image: url('../assets/clouds/cloud_1.png'); }
-  .word-cloud.cloud_2 { background-image: url('../assets/clouds/cloud_2.png'); }
-  .word-cloud.cloud_3 { background-image: url('../assets/clouds/cloud_3.png'); }
-  .word-cloud.cloud_4 { background-image: url('../assets/clouds/cloud_4.png'); }
-  
+  .word-cloud.cloud_first {
+    background-image: url('../assets/clouds/first_letter_cloud.png');
+  }
+
+  .word-cloud.cloud_1 {
+    background-image: url('../assets/clouds/cloud_1.png');
+  }
+
+  .word-cloud.cloud_2 {
+    background-image: url('../assets/clouds/cloud_2.png');
+  }
+
+  .word-cloud.cloud_3 {
+    background-image: url('../assets/clouds/cloud_3.png');
+  }
+
+  .word-cloud.cloud_4 {
+    background-image: url('../assets/clouds/cloud_4.png');
+  }
+
   .cloud-text {
     font-family: 'Berkshire Swash', cursive;
     font-weight: 400;
@@ -557,20 +503,21 @@ body {
     letter-spacing: 0.5px;
     line-height: 1;
     text-align: center;
-    color: #4A2B08; /* rich dark golden-brown */
+    color: #4A2B08;
+    /* rich dark golden-brown */
     text-shadow:
       0 1px 0 #FFF8DC,
-      0 2px 4px rgba(255,220,120,0.45),
-      0 0 10px rgba(255,215,120,0.25);
+      0 2px 4px rgba(255, 220, 120, 0.45),
+      0 0 10px rgba(255, 215, 120, 0.25);
     z-index: 3;
     pointer-events: none;
   }
-  
+
   .word-cloud:hover {
     transform: scale(1.04);
     z-index: 10;
   }
-  
+
   /* Base opacity is 1. JS manages entrance animations and sets inline opacity: 0 initially */
   opacity: 1;
 }
@@ -580,10 +527,12 @@ body {
     opacity: 0;
     transform: translateX(-100%) scale(0.95);
   }
+
   70% {
     opacity: 1;
     transform: translateX(3px) scale(1.0);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) scale(1.0);
@@ -592,12 +541,14 @@ body {
 
 .word-cloud:hover {
   z-index: 10;
-  scale: 1.04; /* Slightly increase scale by ~4% */
+  scale: 1.04;
+  /* Slightly increase scale by ~4% */
   filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.5)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-    0 0 12px rgba(254, 228, 64, 0.9), /* Brighten glow on hover */
+    0 0 12px rgba(254, 228, 64, 0.9),
+    /* Brighten glow on hover */
     0 2px 4px rgba(44, 22, 7, 0.4);
   /* Override textGlowBreath to keep hover text-shadow static, but keep float */
   animation: breatheCloud 4.5s ease-in-out infinite alternate;
@@ -635,17 +586,19 @@ body {
   border-bottom: none;
   align-self: center;
   animation: cloudEntrance 850ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-             blankDivineGlow 3s ease-in-out infinite alternate;
-  animation-delay: 0s, 850ms; /* Pulse starts after entrance fade-in */
+    blankDivineGlow 3s ease-in-out infinite alternate;
+  animation-delay: 0s, 850ms;
+  /* Pulse starts after entrance fade-in */
 }
 
 /* Faint golden sparkle / pulsing glow inside the empty cloud */
 @keyframes blankDivineGlow {
-  0% { 
-    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 5px rgba(254, 228, 64, 0.2)); 
+  0% {
+    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 5px rgba(254, 228, 64, 0.2));
   }
-  100% { 
-    filter: brightness(1.25) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 15px rgba(254, 228, 64, 0.6)); 
+
+  100% {
+    filter: brightness(1.25) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 15px rgba(254, 228, 64, 0.6));
   }
 }
 
@@ -654,7 +607,8 @@ body {
 .blank-placeholder.glowing,
 .blank-placeholder.filled-success-pulse {
   animation: none !important;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)); /* Normal shadow */
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+  /* Normal shadow */
 }
 
 /* Fade in the text smoothly when filled */
@@ -662,6 +616,7 @@ body {
   opacity: 0;
   transition: opacity 400ms ease;
 }
+
 .blank-placeholder.locked-arrival .cloud-text,
 .blank-placeholder.glowing .cloud-text,
 .blank-placeholder.filled-success-pulse .cloud-text {
@@ -694,6 +649,7 @@ body {
   0% {
     transform: translateY(-3.5px) rotate(-0.2deg);
   }
+
   100% {
     transform: translateY(3.5px) rotate(0.2deg);
   }
@@ -797,17 +753,17 @@ body {
 /* Option clouds container inside River */
 .river-options-container {
   position: absolute;
-  left: 5%;
-  right: 5%;
-  bottom: 6%;
-  width: 90%;
+  left: 2%;
+  right: 2%;
+  bottom: 8%;
+  width: 96%;
   height: auto;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: flex-end;
-  gap: clamp(12px, 2.5cqw, 36px);
-  flex-wrap: nowrap !important; /* Never stack vertically */
+  gap: 2vw;
+  flex-wrap: nowrap;
   z-index: 10;
   pointer-events: none;
   box-sizing: border-box;
@@ -829,34 +785,37 @@ body {
   cursor: pointer;
   transform: translateY(0);
   transition: transform 0.3s ease, filter 0.3s ease, opacity 0.5s ease;
-  margin: 0 clamp(4px, 0.8cqw, 10px); /* Swapped cqw to cqw */
+  margin: 0;
+  flex-shrink: 1;
+  /* Allow shrinking to prevent overflow */
 }
 
 /* Lotus Base Layer */
 .option-lotus {
   position: relative;
-  width: 60%; /* 55-65% of cloud width */
+  width: 60%;
+  /* 55-65% of cloud width */
   height: auto;
   pointer-events: none;
   z-index: 1;
   transition: opacity 0.5s ease, transform 0.5s ease;
-  margin-top: clamp(-20px, -2.5cqh, -10px); /* Pulled closer to overlap slightly with cloud */
+  margin-top: clamp(-20px, -2.5cqh, -10px);
+  /* Pulled closer to overlap slightly with cloud */
 }
 
 /* Warm Golden Glow Layer */
 .option-glow {
   position: absolute;
   left: 50%;
-  bottom: 8px; /* Centered in the gap between cloud and lotus */
+  bottom: 8px;
+  /* Centered in the gap between cloud and lotus */
   transform: translateX(-50%);
   width: 50%;
   height: 35%;
-  background: radial-gradient(
-    ellipse at center bottom,
-    rgba(254, 228, 64, 0.8) 0%,
-    rgba(251, 133, 0, 0.4) 45%,
-    rgba(251, 133, 0, 0) 75%
-  );
+  background: radial-gradient(ellipse at center bottom,
+      rgba(254, 228, 64, 0.8) 0%,
+      rgba(251, 133, 0, 0.4) 45%,
+      rgba(251, 133, 0, 0) 75%);
   filter: blur(6px);
   pointer-events: none;
   z-index: 2;
@@ -869,6 +828,7 @@ body {
     opacity: 0.65;
     transform: translateX(-50%) scale(0.95);
   }
+
   100% {
     opacity: 0.95;
     transform: translateX(-50%) scale(1.1);
@@ -879,7 +839,8 @@ body {
 .option-cloud {
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: 100% 100%;
-  color: #4A2B08; /* rich dark golden-brown */
+  color: #4A2B08;
+  /* rich dark golden-brown */
   border: none;
   box-shadow: none;
   font-family: 'Berkshire Swash', cursive;
@@ -889,10 +850,10 @@ body {
   line-height: 1;
   text-align: center;
   white-space: nowrap;
-  padding: 0 clamp(13px, 3.3cqw, 40px) clamp(11px, 2.2cqh, 22px) clamp(13px, 3.3cqw, 40px);
+  padding: 0 clamp(8px, 2.5vw, 40px) clamp(8px, 2vh, 22px) clamp(8px, 2.5vw, 40px);
   border-radius: 0;
-  width: clamp(132px, 16.5cqw, 191px);
-  height: clamp(88px, 11cqh, 128px);
+  width: clamp(100px, 18vw, 191px);
+  height: clamp(60px, 12vh, 128px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -902,12 +863,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   will-change: transform, opacity;
-  
+
   text-shadow:
     0 1px 0 #FFF8DC,
-    0 2px 4px rgba(255,220,120,0.45),
-    0 0 10px rgba(255,215,120,0.25);
-    
+    0 2px 4px rgba(255, 220, 120, 0.45),
+    0 0 10px rgba(255, 215, 120, 0.25);
+
   transition: opacity 0.5s ease, scale 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
   animation: textGlowBreath 3s ease-in-out infinite alternate;
 }
@@ -916,10 +877,12 @@ body {
 .option-container::before {
   content: '';
   position: absolute;
-  bottom: -5px; /* Waterline under the smaller lotus */
+  bottom: -5px;
+  /* Waterline under the smaller lotus */
   left: 20%;
   right: 20%;
-  height: clamp(6px, 1.5cqh, 12px); /* Swapped cqh to cqh */
+  height: clamp(6px, 1.5cqh, 12px);
+  /* Swapped cqh to cqh */
   background: radial-gradient(ellipse at center, rgba(160, 235, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 50%;
@@ -933,12 +896,15 @@ body {
 .option-container:nth-child(4n+1)::before {
   animation-delay: -0.5s;
 }
+
 .option-container:nth-child(4n+2)::before {
   animation-delay: -1.5s;
 }
+
 .option-container:nth-child(4n+3)::before {
   animation-delay: -2.5s;
 }
+
 .option-container:nth-child(4n+4)::before {
   animation-delay: -3.5s;
 }
@@ -947,10 +913,12 @@ body {
 .option-container::after {
   content: '';
   position: absolute;
-  bottom: -15px; /* Shifted up relative to smaller lotus base */
+  bottom: -15px;
+  /* Shifted up relative to smaller lotus base */
   left: 30%;
   right: 30%;
-  height: clamp(8px, 2cqh, 14px); /* Swapped cqh to cqh */
+  height: clamp(8px, 2cqh, 14px);
+  /* Swapped cqh to cqh */
   background: url('../assets/clouds/cloud.png') no-repeat center center;
   background-size: contain;
   opacity: 0.12;
@@ -965,6 +933,7 @@ body {
     transform: scale(0.75);
     opacity: 0.85;
   }
+
   100% {
     transform: scale(1.35);
     opacity: 0;
@@ -1000,16 +969,17 @@ body {
 }
 
 .option-container:hover .option-cloud {
-  scale: 1.04; /* Slightly scale up cloud inside hovered container */
-  filter: drop-shadow(0 0 10px rgba(255,215,120,0.6))
-          drop-shadow(0 0 20px rgba(255,215,120,0.4))
-          drop-shadow(0 0 30px rgba(255,240,180,0.25)) brightness(1.08);
+  scale: 1.04;
+  /* Slightly scale up cloud inside hovered container */
+  filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 120, 0.4)) drop-shadow(0 0 30px rgba(255, 240, 180, 0.25)) brightness(1.08);
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-    0 0 12px rgba(254, 228, 64, 0.9), /* Brighten text glow */
+    0 0 12px rgba(254, 228, 64, 0.9),
+    /* Brighten text glow */
     0 2px 4px rgba(44, 22, 7, 0.4);
-  animation-play-state: paused; /* Pause text glow breath on hover */
+  animation-play-state: paused;
+  /* Pause text glow breath on hover */
 }
 
 .option-container.glowing {
@@ -1021,9 +991,7 @@ body {
 
 .option-container.glowing .option-cloud {
   scale: 1.05;
-  filter: drop-shadow(0 0 10px rgba(255,215,120,0.6))
-          drop-shadow(0 0 20px rgba(255,215,120,0.4))
-          drop-shadow(0 0 30px rgba(255,240,180,0.25)) brightness(1.15);
+  filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 120, 0.4)) drop-shadow(0 0 30px rgba(255, 240, 180, 0.25)) brightness(1.15);
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
@@ -1037,8 +1005,16 @@ body {
 }
 
 @keyframes glowPulseFast {
-  0% { opacity: 0.8; transform: translateX(-50%) scale(1.0); }
-  100% { opacity: 1.0; transform: translateX(-50%) scale(1.25); filter: blur(4px); }
+  0% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1.0);
+  }
+
+  100% {
+    opacity: 1.0;
+    transform: translateX(-50%) scale(1.25);
+    filter: blur(4px);
+  }
 }
 
 /* Offset float animations & Stagger margins vertically to match Ganga's diagonal stream flow */
@@ -1063,23 +1039,43 @@ body {
 }
 
 @keyframes riverBob1 {
-  0% { transform: translateY(-3px) translateX(-4px) rotate(-1.5deg); }
-  100% { transform: translateY(4px) translateX(4px) rotate(1.5deg); }
+  0% {
+    transform: translateY(-3px) translateX(-4px) rotate(-1.5deg);
+  }
+
+  100% {
+    transform: translateY(4px) translateX(4px) rotate(1.5deg);
+  }
 }
 
 @keyframes riverBob2 {
-  0% { transform: translateY(4px) translateX(5px) rotate(2deg); }
-  100% { transform: translateY(-4px) translateX(-5px) rotate(-2deg); }
+  0% {
+    transform: translateY(4px) translateX(5px) rotate(2deg);
+  }
+
+  100% {
+    transform: translateY(-4px) translateX(-5px) rotate(-2deg);
+  }
 }
 
 @keyframes riverBob3 {
-  0% { transform: translateY(-4px) translateX(-5px) rotate(-2deg); }
-  100% { transform: translateY(3px) translateX(3px) rotate(1deg); }
+  0% {
+    transform: translateY(-4px) translateX(-5px) rotate(-2deg);
+  }
+
+  100% {
+    transform: translateY(3px) translateX(3px) rotate(1deg);
+  }
 }
 
 @keyframes riverBob4 {
-  0% { transform: translateY(3px) translateX(4px) rotate(1.5deg); }
-  100% { transform: translateY(-5px) translateX(-4px) rotate(-1.5deg); }
+  0% {
+    transform: translateY(3px) translateX(4px) rotate(1.5deg);
+  }
+
+  100% {
+    transform: translateY(-5px) translateX(-4px) rotate(-1.5deg);
+  }
 }
 
 /* Option container melting / magical dissolve animation (Incorrect answer) */
@@ -1088,7 +1084,7 @@ body {
   opacity: 0 !important;
   transform: scale(0.65) translateY(20px) !important;
   transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
 
 .option-container.melting-water .option-glow {
@@ -1283,7 +1279,8 @@ body {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   flex-direction: column;
-  overflow: visible; /* changed from hidden to let background bleed */
+  overflow: visible;
+  /* changed from hidden to let background bleed */
   padding: 0;
   margin: 0;
   width: 100%;
@@ -1295,13 +1292,14 @@ body {
   left: 0;
   top: 0;
   z-index: 1000;
-  
+
   /* Layout variables for enlarged logo and overlapping play button */
   --logo-width: clamp(550px, 85cqw, 1100px);
   --logo-max-width: min(95cqw, 115cqh);
   --logo-height: calc(min(var(--logo-width), var(--logo-max-width)) / 1.5);
   --btn-height: 54px;
-  --overlap: 8px; /* ~15% overlap of the 54px play button height */
+  --overlap: 8px;
+  /* ~15% overlap of the 54px play button height */
   /* Fade out over 500ms when hidden is added */
   transition: opacity 500ms ease, visibility 500ms ease !important;
 }
@@ -1348,9 +1346,20 @@ body {
 }
 
 @keyframes shimmerCycle {
-  0% { opacity: 0.35; transform: scaleX(1); }
-  50% { opacity: 0.65; transform: scaleX(1.08); }
-  100% { opacity: 0.25; transform: scaleX(0.95); }
+  0% {
+    opacity: 0.35;
+    transform: scaleX(1);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: scaleX(1.08);
+  }
+
+  100% {
+    opacity: 0.25;
+    transform: scaleX(0.95);
+  }
 }
 
 /* Welcome overlay canvas */
@@ -1361,7 +1370,8 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 50; /* layered above image, below button */
+  z-index: 50;
+  /* layered above image, below button */
 }
 
 /* Transparent Logo Centerpiece */
@@ -1420,8 +1430,13 @@ body {
 }
 
 @keyframes rotateRays {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes divineGlow {
@@ -1429,6 +1444,7 @@ body {
     opacity: 0.4;
     transform: scale(0.95);
   }
+
   100% {
     opacity: 1;
     transform: scale(1.05);
@@ -1457,21 +1473,81 @@ body {
 }
 
 /* Position and delay sparkles randomly around the wrapper */
-.s1 { top: 20%; left: 10%; animation-delay: 0.1s; }
-.s2 { top: 80%; left: 85%; animation-delay: 1.2s; }
-.s3 { top: 15%; left: 70%; animation-delay: 0.5s; }
-.s4 { top: 70%; left: 15%; animation-delay: 2.1s; }
-.s5 { top: 50%; left: 90%; animation-delay: 1.5s; }
-.s6 { top: 90%; left: 45%; animation-delay: 3.2s; }
-.s7 { top: 10%; left: 40%; animation-delay: 2.8s; }
-.s8 { top: 40%; left: 5%; animation-delay: 0.9s; }
-.s9 { top: 85%; left: 25%; animation-delay: 1.8s; }
-.s10 { top: 30%; left: 80%; animation-delay: 2.5s; }
+.s1 {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0.1s;
+}
+
+.s2 {
+  top: 80%;
+  left: 85%;
+  animation-delay: 1.2s;
+}
+
+.s3 {
+  top: 15%;
+  left: 70%;
+  animation-delay: 0.5s;
+}
+
+.s4 {
+  top: 70%;
+  left: 15%;
+  animation-delay: 2.1s;
+}
+
+.s5 {
+  top: 50%;
+  left: 90%;
+  animation-delay: 1.5s;
+}
+
+.s6 {
+  top: 90%;
+  left: 45%;
+  animation-delay: 3.2s;
+}
+
+.s7 {
+  top: 10%;
+  left: 40%;
+  animation-delay: 2.8s;
+}
+
+.s8 {
+  top: 40%;
+  left: 5%;
+  animation-delay: 0.9s;
+}
+
+.s9 {
+  top: 85%;
+  left: 25%;
+  animation-delay: 1.8s;
+}
+
+.s10 {
+  top: 30%;
+  left: 80%;
+  animation-delay: 2.5s;
+}
 
 @keyframes floatSparkle {
-  0% { opacity: 0; transform: translateY(10px) scale(0.5); }
-  50% { opacity: 1; transform: translateY(-10px) scale(1.5); }
-  100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.5);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.5);
+  }
 }
 
 #logo-centerpiece {
@@ -1480,7 +1556,7 @@ body {
   display: block;
   position: relative;
   z-index: 4;
-  
+
   /* Divine glow that pulses */
   filter: drop-shadow(0 0 15px rgba(254, 228, 64, 0.5)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
   animation: divineGlow 3.5s ease-in-out infinite alternate;
@@ -1491,6 +1567,7 @@ body {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.95);
   }
+
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -1499,8 +1576,10 @@ body {
 
 @keyframes logoFloat {
   0% {
-    transform: translate(-50%, -50%) translateY(-1.5px); /* Gentle float (1-3px drift) */
+    transform: translate(-50%, -50%) translateY(-1.5px);
+    /* Gentle float (1-3px drift) */
   }
+
   100% {
     transform: translate(-50%, -50%) translateY(1.5px);
   }
@@ -1510,6 +1589,7 @@ body {
   0% {
     filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.15)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
   }
+
   100% {
     filter: drop-shadow(0 0 22px rgba(254, 228, 64, 0.55)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
   }
@@ -1522,23 +1602,29 @@ body {
   left: 50%;
   /* Move the Play button to overlap the logo's bottom edge */
   top: calc(42% + (var(--logo-height) / 2) - 20px);
-  width: clamp(280px, 30cqw, 340px); /* Scaled to 280-340px responsive */
+  width: clamp(280px, 30cqw, 340px);
+  /* Scaled to 280-340px responsive */
   transform: translate(-50%, -50%);
   z-index: 100;
-  
+
   /* Ensure no background renders behind the image */
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   overflow: visible !important;
-  
+
   /* Gentle floating motion (2-4px up and down) and subtle scale breathing (1 -> 1.03 -> 1) */
   animation: buttonBreath 3.5s ease-in-out infinite alternate;
 }
 
 @keyframes buttonBreath {
-  0% { transform: translate(-50%, -50%) translateY(-3px) scale(1.00); }
-  100% { transform: translate(-50%, -50%) translateY(3px) scale(1.03); }
+  0% {
+    transform: translate(-50%, -50%) translateY(-3px) scale(1.00);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) translateY(3px) scale(1.03);
+  }
 }
 
 /* Soft reflection onto the water below the button */
@@ -1573,15 +1659,20 @@ body {
   justify-content: center;
   align-items: center;
   transition: transform 300ms cubic-bezier(0.25, 0.8, 0.25, 1), filter 300ms ease;
-  
+
   /* Soft golden glow that slowly pulses */
   filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.5));
   animation: buttonGlowPulse 3s ease-in-out infinite alternate;
 }
 
 @keyframes buttonGlowPulse {
-  0% { filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.4)); }
-  100% { filter: drop-shadow(0 0 16px rgba(254, 228, 64, 0.8)); }
+  0% {
+    filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.4));
+  }
+
+  100% {
+    filter: drop-shadow(0 0 16px rgba(254, 228, 64, 0.8));
+  }
 }
 
 .play-btn-image {
@@ -1597,7 +1688,8 @@ body {
   /* Slight enlargement (about 8%) and stronger glow */
   transform: scale(1.08);
   filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1));
-  animation: none; /* override pulse to stay bright */
+  animation: none;
+  /* override pulse to stay bright */
 }
 
 /* Click animation: quick press effect spring back */
@@ -1618,6 +1710,7 @@ body {
     transform: none !important;
     animation: none !important;
   }
+
   .play-button-wrapper,
   .custom-play-btn {
     animation: none !important;
@@ -1974,50 +2067,73 @@ body {
 /* Continuous breathing for other clouds (fallback defaults) */
 .word-cloud {
   animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-             breatheCloud1 5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
-             textGlowBreath 3s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
+    breatheCloud1 5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 3s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
 
-.word-cloud.cloud_1 { 
+.word-cloud.cloud_1 {
   animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-             breatheCloud1 5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
-             textGlowBreath 3s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+    breatheCloud1 5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 3s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
-.word-cloud.cloud_2 { 
+
+.word-cloud.cloud_2 {
   animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-             breatheCloud2 5.5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
-             textGlowBreath 3.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+    breatheCloud2 5.5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 3.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
-.word-cloud.cloud_3 { 
+
+.word-cloud.cloud_3 {
   animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-             breatheCloud3 4.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
-             textGlowBreath 2.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+    breatheCloud3 4.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 2.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
-.word-cloud.cloud_4 { 
+
+.word-cloud.cloud_4 {
   animation: cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-             breatheCloud4 5.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate, 
-             textGlowBreath 3.4s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate; 
+    breatheCloud4 5.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 3.4s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
 
 /* 4 Desynchronized organic floating animations (bobbing + side drift + rotate) */
 @keyframes breatheCloud1 {
-  0% { transform: translate3d(0, 0, 0) rotate(-0.3deg); }
-  100% { transform: translate3d(1px, -3px, 0) rotate(0.3deg); }
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-0.3deg);
+  }
+
+  100% {
+    transform: translate3d(1px, -3px, 0) rotate(0.3deg);
+  }
 }
 
 @keyframes breatheCloud2 {
-  0% { transform: translate3d(0, 0, 0) rotate(0.2deg); }
-  100% { transform: translate3d(-1.5px, -2.5px, 0) rotate(-0.2deg); }
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0.2deg);
+  }
+
+  100% {
+    transform: translate3d(-1.5px, -2.5px, 0) rotate(-0.2deg);
+  }
 }
 
 @keyframes breatheCloud3 {
-  0% { transform: translate3d(0, 0, 0) rotate(-0.4deg); }
-  100% { transform: translate3d(1.5px, -2px, 0) rotate(0.4deg); }
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-0.4deg);
+  }
+
+  100% {
+    transform: translate3d(1.5px, -2px, 0) rotate(0.4deg);
+  }
 }
 
 @keyframes breatheCloud4 {
-  0% { transform: translate3d(0, 0, 0) rotate(0.3deg); }
-  100% { transform: translate3d(-1px, -3px, 0) rotate(-0.3deg); }
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0.3deg);
+  }
+
+  100% {
+    transform: translate3d(-1px, -3px, 0) rotate(-0.3deg);
+  }
 }
 
 /* Breathing text shadow golden glow animation */
@@ -2027,6 +2143,7 @@ body {
       0 0 4px rgba(255, 215, 120, 0.2),
       0 1px 2px rgba(0, 0, 0, 0.15);
   }
+
   100% {
     text-shadow:
       0 0 8px rgba(255, 215, 120, 0.5),
@@ -2481,6 +2598,7 @@ body {
     opacity: 0;
     transform: translateY(-40px) scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -2493,6 +2611,7 @@ body {
     opacity: 0;
     transform: translateY(20px) scale(0.95);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -2515,6 +2634,7 @@ body {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
+
   100% {
     transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
     opacity: 0;
@@ -2542,9 +2662,11 @@ body {
   0% {
     filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.8)) brightness(1.15);
   }
+
   50% {
     filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1)) brightness(1.35);
   }
+
   100% {
     filter: drop-shadow(0 0 12px rgba(254, 228, 64, 0.8)) brightness(1.0);
   }
@@ -2570,9 +2692,11 @@ body {
     transform: translate3d(-50%, -50%, 0) scale(0.2);
     opacity: 0;
   }
+
   40% {
     opacity: 1;
   }
+
   100% {
     transform: translate3d(-50%, -50%, 0) scale(1.45);
     opacity: 0;
@@ -2596,10 +2720,12 @@ body {
     transform: scale(1);
     filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.5)) brightness(1);
   }
+
   30% {
     transform: scale(1.08);
     filter: drop-shadow(0 0 25px rgba(254, 228, 64, 1)) brightness(1.25);
   }
+
   100% {
     transform: scale(1);
     filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.5)) brightness(1);
@@ -2613,7 +2739,8 @@ body {
 }
 
 .option-container.dimmed-cloud .option-cloud {
-  filter: brightness(0.8) !important; /* Dim by 20% */
+  filter: brightness(0.8) !important;
+  /* Dim by 20% */
   transition: filter 0.25s ease-out;
 }
 
@@ -2640,7 +2767,8 @@ body {
   z-index: 1;
   pointer-events: none;
   filter: blur(3px) brightness(0.85);
-  box-shadow: inset 0 0 100px rgba(0,0,0,0.5); /* Vignette */
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+  /* Vignette */
   transition: filter 1s ease, background 1s ease;
 }
 
@@ -2649,6 +2777,7 @@ body {
   transform: scale(1.1);
   transform-origin: bottom center;
 }
+
 #vishnu-character {
   transform: scale(1.1);
   transform-origin: bottom center;
@@ -2726,7 +2855,8 @@ body {
   justify-content: center;
   margin: 0 -22px;
   z-index: 2;
-  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4)); /* Soft shadow for depth */
+  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4));
+  /* Soft shadow for depth */
 }
 
 .word-cloud:hover {
@@ -2738,7 +2868,8 @@ body {
 .journey-tracker {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%) scale(0.85); /* Centered explicitly, plus scale */
+  transform: translateX(-50%) scale(0.85);
+  /* Centered explicitly, plus scale */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2784,9 +2915,11 @@ body {
   border-radius: 2px;
 }
 
-.journey-node.active ~ .journey-path {
-  background: rgba(255, 255, 255, 0.1); /* future path */
+.journey-node.active~.journey-path {
+  background: rgba(255, 255, 255, 0.1);
+  /* future path */
 }
+
 /* --- CINEMATIC ENDING SCREEN --- */
 .screen-overlay.cinematic-ending {
   background: rgba(0, 0, 0, 0.25);
@@ -2803,17 +2936,20 @@ body {
   justify-content: flex-start;
   width: 100%;
   height: 100%;
-  padding-top: 20cqh; /* ~20% from the top */
+  padding-top: 20cqh;
+  /* ~20% from the top */
   z-index: 10;
 }
 
 .wisdom-restored-img {
-  width: clamp(300px, 60cqw, 1000px); /* 55-65% of screen width */
+  width: clamp(300px, 60cqw, 1000px);
+  /* 55-65% of screen width */
   max-width: 100%;
   height: auto;
   object-fit: contain;
   opacity: 0;
-  image-rendering: auto; /* Ensure high-DPI crisp rendering */
+  image-rendering: auto;
+  /* Ensure high-DPI crisp rendering */
   animation: cinematicFadeIn 1s ease-out forwards, floatPulse 6s ease-in-out infinite alternate 1s;
 }
 
@@ -2823,7 +2959,7 @@ body {
   opacity: 0;
   animation: cinematicFadeIn 2s ease-out 1s forwards;
   color: #F9E286;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
   font-family: 'Cinzel', serif;
 }
 
@@ -2892,42 +3028,82 @@ body {
 
 /* Animations */
 @keyframes cinematicFadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes floatPulse {
-  0% { transform: translateY(0); filter: drop-shadow(0 0 8px rgba(255,215,0,0.25)); }
-  100% { transform: translateY(-3px); filter: drop-shadow(0 0 15px rgba(255,215,0,0.45)); }
+  0% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.25));
+  }
+
+  100% {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.45));
+  }
 }
 
 /* Celebration particles generated in visual.js */
 .celebration-particle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,240,150,1) 0%, rgba(255,200,0,0) 70%);
+  background: radial-gradient(circle, rgba(255, 240, 150, 1) 0%, rgba(255, 200, 0, 0) 70%);
   animation: floatUpSlow linear forwards;
 }
 
 .celebration-petal {
   position: absolute;
-  background: url(''../assets/clouds/lotus.png'') no-repeat center center;
+  background: url('' ../assets/clouds/lotus.png'') no-repeat center center;
   background-size: contain;
   animation: driftDown linear forwards;
 }
 
 @keyframes floatUpSlow {
-  0% { transform: translateY(0) scale(0.5); opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 0.8; }
-  100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(-100vh) scale(1.2);
+    opacity: 0;
+  }
 }
 
 @keyframes driftDown {
-  0% { transform: translateY(-10cqh) rotate(0deg) scale(0.2); opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.8; }
-  100% { transform: translateY(110cqh) rotate(360deg) scale(0.4); opacity: 0; }
+  0% {
+    transform: translateY(-10cqh) rotate(0deg) scale(0.2);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.8;
+  }
+
+  90% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(110cqh) rotate(360deg) scale(0.4);
+    opacity: 0;
+  }
 }
 
 
@@ -2955,8 +3131,13 @@ body {
   overflow: hidden;
 }
 
-.bg-layer { z-index: 0; }
-.fg-layer { z-index: 10; }
+.bg-layer {
+  z-index: 0;
+}
+
+.fg-layer {
+  z-index: 10;
+}
 
 .ambient-firefly {
   position: absolute;
@@ -2970,13 +3151,25 @@ body {
 }
 
 @keyframes fireflyWander {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(var(--tx), var(--ty)); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(var(--tx), var(--ty));
+  }
 }
 
 @keyframes fireflyBlink {
-  0% { opacity: 0.1; scale: 0.8; }
-  100% { opacity: 0.9; scale: 1.2; }
+  0% {
+    opacity: 0.1;
+    scale: 0.8;
+  }
+
+  100% {
+    opacity: 0.9;
+    scale: 1.2;
+  }
 }
 
 .ambient-bird {
@@ -2988,17 +3181,32 @@ body {
   animation: birdFly var(--dur) linear forwards;
   will-change: transform;
 }
+
 .ambient-bird svg {
   width: 100%;
   height: 100%;
-  fill: #1a202c; /* dark silhouette */
+  fill: #1a202c;
+  /* dark silhouette */
 }
 
 @keyframes birdFly {
-  0% { transform: translate(-50px, var(--sy)) scale(var(--s)); opacity: 0; }
-  10% { opacity: var(--op); }
-  90% { opacity: var(--op); }
-  100% { transform: translate(110cqw, var(--ey)) scale(var(--s)); opacity: 0; }
+  0% {
+    transform: translate(-50px, var(--sy)) scale(var(--s));
+    opacity: 0;
+  }
+
+  10% {
+    opacity: var(--op);
+  }
+
+  90% {
+    opacity: var(--op);
+  }
+
+  100% {
+    transform: translate(110cqw, var(--ey)) scale(var(--s));
+    opacity: 0;
+  }
 }
 
 .ambient-leaf {
@@ -3014,14 +3222,33 @@ body {
 }
 
 @keyframes leafDrift {
-  0% { transform: translate(var(--sx), -20px); opacity: 0; }
-  10% { opacity: var(--op); }
-  90% { opacity: var(--op); }
-  100% { transform: translate(var(--ex), 110cqh); opacity: 0; }
+  0% {
+    transform: translate(var(--sx), -20px);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: var(--op);
+  }
+
+  90% {
+    opacity: var(--op);
+  }
+
+  100% {
+    transform: translate(var(--ex), 110cqh);
+    opacity: 0;
+  }
 }
+
 @keyframes leafSpin {
-  0% { rotate: -30deg; }
-  100% { rotate: 60deg; }
+  0% {
+    rotate: -30deg;
+  }
+
+  100% {
+    rotate: 60deg;
+  }
 }
 
 /* Lotuses Bobbing & Glow */
@@ -3029,16 +3256,30 @@ body {
   animation: lotusBob 4s ease-in-out infinite alternate;
   filter: drop-shadow(0 0 5px rgba(254, 228, 64, 0.3));
 }
+
 @keyframes lotusBob {
-  0% { transform: translateY(0) rotate(-1deg); filter: drop-shadow(0 0 3px rgba(254, 228, 64, 0.2)); }
-  100% { transform: translateY(-4px) rotate(1deg); filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.5)); }
+  0% {
+    transform: translateY(0) rotate(-1deg);
+    filter: drop-shadow(0 0 3px rgba(254, 228, 64, 0.2));
+  }
+
+  100% {
+    transform: translateY(-4px) rotate(1deg);
+    filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.5));
+  }
 }
 
 /* Character Breathing Glow */
 .character {
   animation: divineBreath 6s ease-in-out infinite alternate;
 }
+
 @keyframes divineBreath {
-  0% { filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.15)); }
-  100% { filter: drop-shadow(0 0 25px rgba(254, 228, 64, 0.4)); }
+  0% {
+    filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.15));
+  }
+
+  100% {
+    filter: drop-shadow(0 0 25px rgba(254, 228, 64, 0.4));
+  }
 }

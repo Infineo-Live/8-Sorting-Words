@@ -6,7 +6,7 @@ const GameManager = {
   score: 0,
   attempts: 0, // Number of incorrect attempts for the current teaching
   isInputActive: false, // Disables clicking options during transitions
-  
+
   // Cache DOM Elements
   container: document.getElementById('game-container'),
   btnBegin: document.getElementById('btn-begin-wisdom'),
@@ -20,7 +20,7 @@ const GameManager = {
   optionsContainer: document.getElementById('river-options-container'),
   scoreVal: document.getElementById('score-val'),
   finalScoreVal: document.getElementById('final-score-num'),
-  
+
   // Initialize Event Listeners
   init() {
     // Start background music system
@@ -73,7 +73,7 @@ const GameManager = {
   // Transition to Gameplay Screen
   startGame() {
     this.container.className = 'state-gameplay';
-    
+
     // Start background music loop when user clicks PLAY
     SoundManager.playBGM();
 
@@ -95,14 +95,9 @@ const GameManager = {
     VisualManager.shivaReset();
     VisualManager.vishnuReset();
     VisualManager.resetCamera();
-    
-    // Show in-game instruction overlay
-    this.showInGameInstructions();
 
-    // Start first teaching
-    setTimeout(() => {
-      this.loadTeaching(this.currentTeachingIndex);
-    }, 1000);
+    // Show in-game instruction overlay, wait for OK button to load teaching
+    this.showInGameInstructions();
   },
 
   // Load a teaching by index
@@ -135,7 +130,7 @@ const GameManager = {
   stepShivaSpeaks() {
     const teaching = TEACHINGS[this.currentTeachingIndex];
     const words = teaching.sentence.split(' ');
-    
+
     this.sentenceContainer.innerHTML = '';
     this.sentenceContainer.classList.remove('hidden');
 
@@ -152,22 +147,22 @@ const GameManager = {
       cloud.style.pointerEvents = 'none';
       cloud.style.zIndex = words.length - idx; // First word is highest to hide subsequent clouds
       cloud.style.setProperty('--delay', `${idx * 0.3}s`); // 300ms staggering
-      
+
       const textSpan = document.createElement('span');
       textSpan.className = 'cloud-text';
-      
-      const cleaned = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-      
+
+      const cleaned = word.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+
       if (cleaned === teaching.missingWord.toLowerCase()) {
         // Target blank placeholder (empty text but maintains cloud shape)
         cloud.id = 'target-blank';
         cloud.classList.add('target-word', 'blank-placeholder');
-        textSpan.textContent = ''; 
+        textSpan.textContent = '';
         cloud.dataset.originalWord = word; // Store original word (with punctuation)
       } else {
         textSpan.textContent = word;
       }
-      
+
       cloud.appendChild(textSpan);
       this.sentenceContainer.appendChild(cloud);
       cloudsArray.push(cloud);
@@ -183,16 +178,16 @@ const GameManager = {
         sparkle.style.height = `${size}px`;
         sparkle.style.left = `${x}px`;
         sparkle.style.top = `${y}px`;
-        
+
         const angle = Math.random() * Math.PI * 2;
         const distance = Math.random() * 60 + 30;
         const tx = Math.cos(angle) * distance;
         const ty = Math.sin(angle) * distance;
-        
+
         sparkle.style.setProperty('--tx', `${tx}px`);
         sparkle.style.setProperty('--ty', `${ty}px`);
         sparkle.style.animationDelay = `${Math.random() * 80}ms`;
-        
+
         this.sentenceContainer.appendChild(sparkle);
         setTimeout(() => sparkle.remove(), 900);
       }
@@ -214,7 +209,7 @@ const GameManager = {
         // Clear initial styles to hand off to CSS idle states
         cloud.style.opacity = '';
         cloud.style.transform = '';
-        
+
         // Desynchronized float and breathe animations for every single cloud
         const duration = 5.0 + cIdx * 0.7;
         const delay = cIdx * -0.4;
@@ -243,12 +238,12 @@ const GameManager = {
   },
 
   // Step 2: (Bypassed) Word Falls is no longer used, kept as empty stub
-  stepWordFalls() {},
+  stepWordFalls() { },
 
   // Step 3: Vishnu Guides (Contemplating gesture, camera focus, narration)
   stepVishnuGuides() {
     const teaching = TEACHINGS[this.currentTeachingIndex];
-    
+
     // Prepare Vishnu behavior
     VisualManager.vishnuContemplate();
     VisualManager.focusCameraOnGanga();
@@ -262,7 +257,7 @@ const GameManager = {
   // Step 4: Player Restores Wisdom (Options float in Ganga)
   stepPlayerRestores() {
     const teaching = TEACHINGS[this.currentTeachingIndex];
-    
+
     // Shuffle options
     const shuffledOptions = this.shuffleArray([...teaching.options]);
     this.optionsContainer.innerHTML = '';
@@ -271,22 +266,22 @@ const GameManager = {
       // Create the OptionContainer wrapper
       const container = document.createElement('div');
       container.className = 'option-container';
-      
+
       // Apply staggered CSS entry animation
       container.style.opacity = '0';
       container.style.animation = 'optionReveal 1.2s ease-out forwards';
       container.style.animationDelay = `${idx * 0.12}s`;
-      
+
       // Lotus Image
       const lotus = document.createElement('img');
       lotus.className = 'option-lotus';
       lotus.src = 'assets/clouds/lotus.png';
       lotus.alt = 'Lotus Base';
-      
+
       // Golden Glow
       const glow = document.createElement('div');
       glow.className = 'option-glow';
-      
+
       // Cloud Element
       const cloud = document.createElement('div');
       cloud.className = 'option-cloud';
@@ -299,15 +294,15 @@ const GameManager = {
       }
       cloud.style.setProperty('--font-scale', scale);
 
-      
+
       // Append in layout order: Cloud -> Glow -> Lotus
       container.appendChild(cloud);
       container.appendChild(glow);
       container.appendChild(lotus);
-      
+
       // Bind click to the container
       container.addEventListener('click', (e) => this.handleOptionClick(e, container, optText));
-      
+
       this.optionsContainer.appendChild(container);
     });
 
@@ -339,7 +334,7 @@ const GameManager = {
       // Correct behavior
       this.isInputActive = false;
       this.optionsContainer.classList.remove('active');
-      
+
       // Play soft magical chime
       SoundManager.playCorrectChime();
 
@@ -435,7 +430,7 @@ const GameManager = {
       setTimeout(() => {
         element.classList.remove('dimmed-cloud');
         element.classList.add('melting-water-peaceful');
-        
+
         // Play soft poof sound again for the dissolve
         SoundManager.playPoof();
 
@@ -464,7 +459,7 @@ const GameManager = {
           if (this.attempts >= 2) {
             // Remove wrong cloud and trigger automatic restoration
             element.remove();
-            
+
             setTimeout(() => {
               this.triggerAutoRestore();
             }, 400); // Small delay to let reposition finish
@@ -472,7 +467,7 @@ const GameManager = {
             // Wait for reposition to settle before checking option count / re-enabling input
             setTimeout(() => {
               element.remove(); // Clean up from DOM after it's hidden
-              
+
               // Check if only one option remains (it must be the correct one)
               const remainingOptions = this.optionsContainer.querySelectorAll('.option-container');
               if (remainingOptions.length <= 1) {
@@ -513,7 +508,7 @@ const GameManager = {
     // Bezier control points
     const p0 = { x: elemRect.left - containerRect.left, y: elemRect.top - containerRect.top };
     const p2 = { x: blankRect.left - containerRect.left, y: blankRect.top - containerRect.top };
-    
+
     // Control point P1 is offset upwards to create a natural arching trajectory
     const p1 = {
       x: p0.x + (p2.x - p0.x) * 0.25,
@@ -537,7 +532,7 @@ const GameManager = {
 
       flyer.style.left = `${x}px`;
       flyer.style.top = `${y}px`;
-      
+
       // Gentle swell scale along the trajectory
       const scale = 1.0 + Math.sin(t * Math.PI) * 0.15;
       flyer.style.transform = `scale(${scale})`;
@@ -547,13 +542,13 @@ const GameManager = {
       } else {
         // Remove flyer on arrival
         flyer.remove();
-        
+
         // Blank cloud enlarges, glows, reveals original word, and triggers golden success pulse
         blank.classList.add('locked-arrival', 'glowing', 'filled-success-pulse');
         const textSpan = blank.querySelector('.cloud-text');
         if (textSpan) textSpan.textContent = blank.dataset.originalWord || wordText;
         else blank.textContent = blank.dataset.originalWord || wordText;
-        
+
         // Play chime sound
         SoundManager.playBell();
 
@@ -601,7 +596,7 @@ const GameManager = {
         else pointsAwarded = 50;
 
         this.score += pointsAwarded;
-        
+
         // Sparkle and rise from Ganga along Bezier curve
         this.animateCloudToSentence(correctElem, teaching.missingWord, () => {
           this.updateScoreboard();
@@ -643,7 +638,7 @@ const GameManager = {
           }, 400);
         });
       }
-      
+
       // Turn off sparkles after 1 second
       setTimeout(() => {
         VisualManager.setRiverSparkle(false);
@@ -657,13 +652,13 @@ const GameManager = {
     this.loadTeaching(this.currentTeachingIndex);
   },
 
-    // Transition to Ending Screen
+  // Transition to Ending Screen
   endGame() {
     this.container.className = 'state-ending';
     if (this.screenEnding) {
       this.screenEnding.classList.remove('hidden');
     }
-    
+
     // Log image path and attach error handler
     const victoryImg = document.getElementById('wisdom-restored-img');
     if (victoryImg) {
@@ -681,7 +676,7 @@ const GameManager = {
       clearInterval(this.idleSparkleInterval);
       this.idleSparkleInterval = null;
     }
-    
+
     // Set visual states
     VisualManager.shivaBless();
     VisualManager.vishnuNamaste();
@@ -731,10 +726,10 @@ const GameManager = {
     this.currentTeachingIndex = 0;
     this.score = 0;
     this.updateScoreboard();
-    
+
     // Clear in-game instructions
     this.fadeInstructionsOut();
-    
+
     // Reset all visuals
     VisualManager.shivaReset();
     VisualManager.vishnuReset();
@@ -742,50 +737,59 @@ const GameManager = {
     VisualManager.resetJourney();
     VisualManager.resetEndingLotus();
     VisualManager.hideVishnuSpeech();
-    
+
     this.sentenceContainer.innerHTML = '';
     this.optionsContainer.innerHTML = '';
   },
 
   // Show in-game instruction overlay
   showInGameInstructions() {
-    const panel = document.getElementById('game-instructions-panel');
-    if (!panel) return;
+    const overlay = document.getElementById('instruction-overlay');
+    if (!overlay) {
+      this.loadTeaching(this.currentTeachingIndex);
+      return;
+    }
 
-    clearTimeout(this.instructionTimeout);
-    panel.classList.remove('hidden', 'fade-out');
+    overlay.classList.remove('hidden', 'fade-out');
     // Trigger layout paint
-    panel.offsetHeight;
-    panel.classList.add('show');
+    overlay.offsetHeight;
+    overlay.classList.add('show');
 
-    // Automatically fade out after 9 seconds
-    this.instructionTimeout = setTimeout(() => {
-      this.fadeInstructionsOut();
-    }, 9000);
+    // Bind ok button
+    const okBtn = document.getElementById('btn-ok-instruction');
+    if (okBtn) {
+      // Remove old listeners if any by replacing element
+      const newBtn = okBtn.cloneNode(true);
+      okBtn.parentNode.replaceChild(newBtn, okBtn);
 
-    // Bind close button
-    const closeBtn = document.getElementById('btn-close-instructions');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.fadeInstructionsOut();
-      });
+      const proceed = (e) => {
+        if (e.type === 'click' || (e.type === 'keydown' && (e.key === 'Enter' || e.key === ' '))) {
+          e.stopPropagation();
+          e.preventDefault();
+          this.fadeInstructionsOut();
+        }
+      };
+
+      newBtn.addEventListener('click', proceed);
+      newBtn.addEventListener('keydown', proceed);
+      newBtn.focus();
     }
   },
 
   // Fade out in-game instructions
   fadeInstructionsOut() {
-    const panel = document.getElementById('game-instructions-panel');
-    if (!panel || !panel.classList.contains('show')) return;
+    const overlay = document.getElementById('instruction-overlay');
+    if (!overlay || !overlay.classList.contains('show')) return;
 
-    clearTimeout(this.instructionTimeout);
-    panel.classList.remove('show');
-    panel.classList.add('fade-out');
+    overlay.classList.remove('show');
+    overlay.classList.add('fade-out');
 
-    // Add hidden after animation completes (500ms transition)
+    // Add hidden after animation completes (400ms transition)
     setTimeout(() => {
-      panel.classList.add('hidden');
-    }, 500);
+      overlay.classList.add('hidden');
+      // Begin gameplay
+      this.loadTeaching(this.currentTeachingIndex);
+    }, 400);
   },
 
   // UI Feedback Overlay Helpers
@@ -833,7 +837,7 @@ const GameManager = {
   generateWisdomList() {
     const listContainer = document.getElementById('todays-wisdom-list');
     if (!listContainer) return;
-    
+
     // Clear old items except title
     const title = listContainer.querySelector('.todays-wisdom-title');
     listContainer.innerHTML = '';
@@ -842,7 +846,7 @@ const GameManager = {
     TEACHINGS.forEach(t => {
       const item = document.createElement('div');
       item.className = 'wisdom-item';
-      
+
       const sentence = document.createElement('div');
       sentence.className = 'wisdom-sentence';
       // Replace missing word with actual word correctly capitalized
@@ -875,7 +879,7 @@ const GameManager = {
     for (let i = 0; i < particleCount; i++) {
       const p = document.createElement('div');
       p.className = 'melt-particle';
-      
+
       const rand = Math.random();
       if (rand < 0.40) {
         // Soft blue/cyan water droplets
@@ -911,7 +915,7 @@ const GameManager = {
       p.style.top = `${y}px`;
       p.style.zIndex = '120';
       p.style.willChange = 'transform, opacity';
-      
+
       parentContainer.appendChild(p);
 
       // Math physics simulation: radial velocity + gravity pull
@@ -926,7 +930,7 @@ const GameManager = {
       function animateParticle(time) {
         const elapsed = time - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // Easing trajectory
         const curX = x + dx * (progress * 12);
         const curY = y + dy * (progress * 12) + (0.5 * 9.8 * Math.pow(progress * 1.4, 2) * 8);
@@ -957,15 +961,15 @@ const GameManager = {
       sparkle.style.left = `${x}px`;
       sparkle.style.top = `${y}px`;
       sparkle.style.willChange = 'transform, opacity';
-      
+
       const angle = Math.random() * Math.PI * 2;
       const distance = Math.random() * 100 + 40;
       const tx = Math.cos(angle) * distance;
       const ty = Math.sin(angle) * distance;
-      
+
       sparkle.style.setProperty('--tx', `${tx}px`);
       sparkle.style.setProperty('--ty', `${ty}px`);
-      
+
       parentContainer.appendChild(sparkle);
       setTimeout(() => sparkle.remove(), 900);
     }
@@ -974,7 +978,7 @@ const GameManager = {
   // Reposition remaining option clouds smoothly using FLIP technique
   repositionRemainingOptions(removedElement) {
     const others = Array.from(this.optionsContainer.querySelectorAll('.option-container')).filter(el => el !== removedElement);
-    
+
     // 1. Record initial positions
     const firstRects = others.map(el => ({
       el,

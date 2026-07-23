@@ -1,5 +1,5 @@
 // Shiva's Wisdom - Landing Screen Visual Effects (Fireflies, Birds, Dust, Logo Sparkles)
-(function() {
+(function () {
   window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('welcome-particles');
     if (!canvas) return;
@@ -21,7 +21,7 @@
       canvas.width = rect.width;
       canvas.height = rect.height;
     }
-    
+
     const resizeObserver = new ResizeObserver(() => {
       resizeCanvas();
     });
@@ -44,7 +44,7 @@
         const canvasRect = canvas.getBoundingClientRect();
         const cx = (rect.left + rect.width / 2) - canvasRect.left;
         const cy = (rect.top + rect.height / 2) - canvasRect.top;
-        
+
         // Spawn 32 star sparkles radiating in a circle
         for (let i = 0; i < 32; i++) {
           clickSparkles.push(new ClickSparkle(cx, cy));
@@ -153,14 +153,14 @@
         this.scale = Math.random() * 0.4 + 0.3; // tiny size
         this.wingPhase = Math.random() * Math.PI * 2;
         this.wingSpeed = 0.06 + Math.random() * 0.03;
-        
+
         this.isCircling = false;
         this.circleAngle = 0;
         this.circleSpeed = 0.01;
         this.circleRadius = Math.random() * 30 + 20;
         this.circleCenterX = 0;
         this.circleCenterY = 0;
-        
+
         this.willCircle = Math.random() < 0.2; // 20% circle chance
         this.circleTriggerX = canvas.width * (Math.random() * 0.3 + 0.35);
         this.hasCircled = false;
@@ -180,7 +180,7 @@
           this.circleAngle += this.circleSpeed;
           this.x = this.circleCenterX + Math.cos(this.circleAngle) * this.circleRadius;
           this.y = this.circleCenterY + Math.sin(this.circleAngle) * this.circleRadius;
-          
+
           if (this.circleAngle >= Math.PI * 2) {
             this.isCircling = false;
           }
@@ -200,9 +200,9 @@
         ctx.lineWidth = 1.1;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
-        
+
         const flap = Math.sin(this.wingPhase) * 3 * this.scale;
-        
+
         ctx.beginPath();
         ctx.moveTo(this.x - 5 * this.scale, this.y - flap);
         ctx.quadraticCurveTo(this.x - 2 * this.scale, this.y - 1.5 * this.scale, this.x, this.y);
