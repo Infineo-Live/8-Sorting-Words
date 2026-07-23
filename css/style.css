@@ -359,10 +359,13 @@ canvas,
 /* centering the continuous sentence horizontally while avoiding Shiva, Vishnu, mountains and temple. */
 .sentence-container {
   position: absolute;
-  top: clamp(40px, 8vh, 80px);
-  /* Positioned below header */
-  left: 10%;
-  right: 10%;
+  top: 10%;
+  transform: translateY(-50%);
+  /* Centered vertically and horizontally */
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: nowrap;
   /* Keep on a single horizontal row for natural reading flow */
@@ -370,10 +373,11 @@ canvas,
   align-items: center;
   gap: 0;
   z-index: 10;
-  padding: 0;
+  padding: 0 2%;
   opacity: 1 !important;
   /* Explicit active state opacity */
   transition: opacity 2s ease;
+  container-type: inline-size;
 
   /* Cohesive floating animation for the entire sentence group */
   animation: sentenceFloat 7s ease-in-out infinite alternate;
@@ -395,8 +399,7 @@ canvas,
   align-items: center;
   justify-content: center;
 
-  width: 259px;
-  /* 20% larger than previous */
+  width: clamp(120px, 25cqw, 259px);
   height: auto;
   aspect-ratio: 1.8 / 1;
 
@@ -405,7 +408,7 @@ canvas,
   background-position: center;
   background-size: contain;
 
-  padding: 0 35px;
+  padding: 0 clamp(16px, 3.3cqw, 35px);
   margin: 0;
   border: 0;
   box-shadow: none;
@@ -429,7 +432,7 @@ canvas,
 
 /* Add natural overlap to overcome transparent PNG padding (approx 24% of bounding box) */
 .sentence-container>*+* {
-  margin-left: -62px;
+  margin-left: clamp(-62px, -6cqw, -28px);
 }
 
 /* Custom cloud overrides removed so all sentence words use the default cloud.png */
@@ -437,7 +440,7 @@ canvas,
 .cloud-text {
   font-family: "Berkshire Swash", cursive;
   font-weight: 400;
-  font-size: clamp(28px, 2.3cqw, 42px);
+  font-size: clamp(16px, 4cqw, 42px);
   letter-spacing: 0.5px;
   line-height: 1;
   text-align: center;
