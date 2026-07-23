@@ -21,209 +21,207 @@
 </head>
 
 <body>
-<div id="viewport-wrapper">
-  <div id="game-container" class="state-opening">
-    <div id="game-bg" class="game-bg"></div>
-    <!-- Top Navigation / Header (visible during gameplay and ending) -->
-    <header id="game-header">
+    <div id="game-container" class="state-opening">
+      <div id="game-bg" class="game-bg"></div>
+      <!-- Top Navigation / Header (visible during gameplay and ending) -->
+      <header id="game-header">
 
-      <!-- Header Left (Logo) -->
-      <div class="header-left">
-        <img src="assets/company_logo.png" alt="Company Logo" class="brand-logo">
-      </div>
+        <!-- Header Left (Logo) -->
+        <div class="header-left">
+          <img src="assets/company_logo.png" alt="Company Logo" class="brand-logo">
+        </div>
 
-      <!-- Header Right (Lotus Counter & Sound Toggle) -->
-      <div class="header-right">
-        <!-- Lotus Progress Tracker -->
-        <div id="lotus-tracker" class="lotus-tracker">
-          <div class="lotus-slot" id="lotus-slot-0">
-            <svg class="lotus-flower-svg" viewBox="0 0 100 100">
-              <path class="lotus-bg"
-                d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z" fill="#4a5568"
-                opacity="0.3" />
-              <g class="lotus-petals">
-                <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
-                  fill="#ffccd5" />
-                <path class="petal-left"
-                  d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
-                  fill="#ff85a1" />
-                <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
-                  fill="#ff477e" />
-                <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
-                <circle cx="50" cy="73" r="5" fill="#fee440" />
-              </g>
-            </svg>
+        <!-- Header Right (Lotus Counter & Sound Toggle) -->
+        <div class="header-right">
+          <!-- Lotus Progress Tracker -->
+          <div id="lotus-tracker" class="lotus-tracker">
+            <div class="lotus-slot" id="lotus-slot-0">
+              <svg class="lotus-flower-svg" viewBox="0 0 100 100">
+                <path class="lotus-bg"
+                  d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z"
+                  fill="#4a5568" opacity="0.3" />
+                <g class="lotus-petals">
+                  <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
+                    fill="#ffccd5" />
+                  <path class="petal-left"
+                    d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
+                    fill="#ff85a1" />
+                  <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
+                    fill="#ff477e" />
+                  <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
+                  <circle cx="50" cy="73" r="5" fill="#fee440" />
+                </g>
+              </svg>
+            </div>
+            <div class="lotus-slot" id="lotus-slot-1">
+              <svg class="lotus-flower-svg" viewBox="0 0 100 100">
+                <path class="lotus-bg"
+                  d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z"
+                  fill="#4a5568" opacity="0.3" />
+                <g class="lotus-petals">
+                  <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
+                    fill="#ffccd5" />
+                  <path class="petal-left"
+                    d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
+                    fill="#ff85a1" />
+                  <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
+                    fill="#ff477e" />
+                  <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
+                  <circle cx="50" cy="73" r="5" fill="#fee440" />
+                </g>
+              </svg>
+            </div>
+            <div class="lotus-slot" id="lotus-slot-2">
+              <svg class="lotus-flower-svg" viewBox="0 0 100 100">
+                <path class="lotus-bg"
+                  d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z"
+                  fill="#4a5568" opacity="0.3" />
+                <g class="lotus-petals">
+                  <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
+                    fill="#ffccd5" />
+                  <path class="petal-left"
+                    d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
+                    fill="#ff85a1" />
+                  <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
+                    fill="#ff477e" />
+                  <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
+                  <circle cx="50" cy="73" r="5" fill="#fee440" />
+                </g>
+              </svg>
+            </div>
+            <div class="lotus-slot" id="lotus-slot-3">
+              <svg class="lotus-flower-svg" viewBox="0 0 100 100">
+                <path class="lotus-bg"
+                  d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z"
+                  fill="#4a5568" opacity="0.3" />
+                <g class="lotus-petals">
+                  <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
+                    fill="#ffccd5" />
+                  <path class="petal-left"
+                    d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
+                    fill="#ff85a1" />
+                  <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
+                    fill="#ff477e" />
+                  <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
+                  <circle cx="50" cy="73" r="5" fill="#fee440" />
+                </g>
+              </svg>
+            </div>
           </div>
-          <div class="lotus-slot" id="lotus-slot-1">
-            <svg class="lotus-flower-svg" viewBox="0 0 100 100">
-              <path class="lotus-bg"
-                d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z" fill="#4a5568"
-                opacity="0.3" />
-              <g class="lotus-petals">
-                <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
-                  fill="#ffccd5" />
-                <path class="petal-left"
-                  d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
-                  fill="#ff85a1" />
-                <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
-                  fill="#ff477e" />
-                <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
-                <circle cx="50" cy="73" r="5" fill="#fee440" />
-              </g>
-            </svg>
+          <div id="scoreboard" class="scoreboard">
+            <span class="score-label">Wisdom Score:</span>
+            <span id="score-val" class="score-value">0</span>
           </div>
-          <div class="lotus-slot" id="lotus-slot-2">
-            <svg class="lotus-flower-svg" viewBox="0 0 100 100">
-              <path class="lotus-bg"
-                d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z" fill="#4a5568"
-                opacity="0.3" />
-              <g class="lotus-petals">
-                <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
-                  fill="#ffccd5" />
-                <path class="petal-left"
-                  d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
-                  fill="#ff85a1" />
-                <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
-                  fill="#ff477e" />
-                <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
-                <circle cx="50" cy="73" r="5" fill="#fee440" />
-              </g>
-            </svg>
+          <button id="sound-toggle" class="sound-toggle" aria-label="Toggle Sound">🔊</button>
+        </div>
+      </header>
+
+      <!-- Visual Canvas & Interactive Scene Area -->
+      <main id="game-scene" class="game-scene">
+        <!-- Game-in Instructions Overlay panel -->
+        <div id="game-instructions-panel" class="game-instructions-panel hidden">
+          <span class="magical-shimmer"></span>
+          <p class="game-instructions-text">Click the magical clouds to restore the lost wisdom.</p>
+        </div>
+
+        <div class="scene-content" id="scene-content">
+          <canvas id="ambient-canvas" class="ambient-canvas"></canvas>
+
+          <!-- Background Layers for Smooth Transitions and Blur Effects -->
+          <div class="background-layers">
+            <!-- Sunrise & Sky Background -->
+
+
+            <!-- Ambient Background Layer for Birds and Clouds -->
+            <div id="ambient-bg-layer" class="ambient-layer bg-layer"></div>
+
           </div>
-          <div class="lotus-slot" id="lotus-slot-3">
-            <svg class="lotus-flower-svg" viewBox="0 0 100 100">
-              <path class="lotus-bg"
-                d="M50 15 C45 35 25 45 25 65 C25 80 40 85 50 85 C60 85 75 80 75 65 C75 45 55 35 50 15 Z" fill="#4a5568"
-                opacity="0.3" />
-              <g class="lotus-petals">
-                <path class="petal-back" d="M50 15 C40 30 20 50 30 75 C40 85 60 85 70 75 C80 50 60 30 50 15 Z"
-                  fill="#ffccd5" />
-                <path class="petal-left"
-                  d="M50 40 C30 50 15 65 25 80 C35 85 50 80 50 80 C50 80 65 85 75 80 C85 65 70 50 50 40 Z"
-                  fill="#ff85a1" />
-                <path class="petal-right" d="M50 45 C40 55 30 65 40 80 C50 82 50 82 60 80 C70 65 60 55 50 45 Z"
-                  fill="#ff477e" />
-                <path class="petal-center" d="M50 50 C45 60 40 70 50 80 C60 70 55 60 50 50 Z" fill="#ff0a54" />
-                <circle cx="50" cy="73" r="5" fill="#fee440" />
-              </g>
-            </svg>
+          <!-- Lord Vishnu Figure (Smaller, Listening to the side) -->
+          <!-- Cloud sentences spoken by Shiva (Step 1 & 2) -->
+          <div id="sentence-container" class="sentence-container hidden">
+            <!-- Spoken words as clouds will be dynamically populated here -->
           </div>
         </div>
-        <div id="scoreboard" class="scoreboard">
-          <span class="score-label">Wisdom Score:</span>
-          <span id="score-val" class="score-value">0</span>
+
+        <!-- Floating Score Animation overlay -->
+        <div id="floating-score" class="floating-score-container"></div>
+        <!-- Floating interactive option clouds in Ganga -->
+        <div id="river-options-container" class="river-options-container">
+          <!-- Option clouds populated dynamically -->
         </div>
-        <button id="sound-toggle" class="sound-toggle" aria-label="Toggle Sound">🔊</button>
-      </div>
-    </header>
-
-    <!-- Visual Canvas & Interactive Scene Area -->
-    <main id="game-scene" class="game-scene">
-      <!-- Game-in Instructions Overlay panel -->
-      <div id="game-instructions-panel" class="game-instructions-panel hidden">
-        <span class="magical-shimmer"></span>
-        <p class="game-instructions-text">Click the magical clouds to restore the lost wisdom.</p>
-      </div>
-
-      <div class="scene-content" id="scene-content">
-        <canvas id="ambient-canvas" class="ambient-canvas"></canvas>
-
-        <!-- Background Layers for Smooth Transitions and Blur Effects -->
-        <div class="background-layers">
-          <!-- Sunrise & Sky Background -->
-
-
-          <!-- Ambient Background Layer for Birds and Clouds -->
-          <div id="ambient-bg-layer" class="ambient-layer bg-layer"></div>
-
-        </div>
-        <!-- Lord Vishnu Figure (Smaller, Listening to the side) -->
-        <!-- Cloud sentences spoken by Shiva (Step 1 & 2) -->
-        <div id="sentence-container" class="sentence-container hidden">
-          <!-- Spoken words as clouds will be dynamically populated here -->
-        </div>
-      </div>
-
-      <!-- Floating Score Animation overlay -->
-      <div id="floating-score" class="floating-score-container"></div>
-      <!-- Floating interactive option clouds in Ganga -->
-      <div id="river-options-container" class="river-options-container">
-        <!-- Option clouds populated dynamically -->
-      </div>
-      </div>
+    </div>
     </main>
 
     <!-- SCREEN 1: Welcome / Title Screen Overlay -->
     <div id="screen-welcome" class="screen-overlay welcome-screen-overlay">
       <canvas id="welcome-particles" class="welcome-particles-canvas"></canvas>
-    <!-- Ambient water shimmer overlay -->
-    <div class="water-shimmer"></div>
+      <!-- Ambient water shimmer overlay -->
+      <div class="water-shimmer"></div>
 
-    <!-- Top Left Company Logo on Landing Page -->
-    <div class="landing-company-logo">
-      <img src="assets/company_logo.png" alt="Company Logo">
-    </div>
+      <!-- Top Left Company Logo on Landing Page -->
+      <div class="landing-company-logo">
+        <img src="assets/company_logo.png" alt="Company Logo">
+      </div>
 
-    <!-- Transparent Logo Centerpiece -->
-    <div class="logo-container">
-      <div class="magical-logo-wrapper">
-        <div class="logo-halo"></div>
-        <div class="logo-rays"></div>
-        <img src="assets/logo.png" id="logo-centerpiece" alt="Shiva's Wisdom Logo">
-        <div class="css-sparkles">
-          <!-- Small glowing dust / sparkles -->
-          <div class="sparkle s1"></div>
-          <div class="sparkle s2"></div>
-          <div class="sparkle s3"></div>
-          <div class="sparkle s4"></div>
-          <div class="sparkle s5"></div>
-          <div class="sparkle s6"></div>
-          <div class="sparkle s7"></div>
-          <div class="sparkle s8"></div>
-          <div class="sparkle s9"></div>
-          <div class="sparkle s10"></div>
+      <!-- Transparent Logo Centerpiece -->
+      <div class="logo-container">
+        <div class="magical-logo-wrapper">
+          <div class="logo-halo"></div>
+          <div class="logo-rays"></div>
+          <img src="assets/logo.png" id="logo-centerpiece" alt="Shiva's Wisdom Logo">
+          <div class="css-sparkles">
+            <!-- Small glowing dust / sparkles -->
+            <div class="sparkle s1"></div>
+            <div class="sparkle s2"></div>
+            <div class="sparkle s3"></div>
+            <div class="sparkle s4"></div>
+            <div class="sparkle s5"></div>
+            <div class="sparkle s6"></div>
+            <div class="sparkle s7"></div>
+            <div class="sparkle s8"></div>
+            <div class="sparkle s9"></div>
+            <div class="sparkle s10"></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Custom Play Button wrapped for independent float animation -->
-    <div class="play-button-wrapper">
-      <div class="button-reflection"></div>
-      <button id="btn-begin-wisdom" class="custom-play-btn" aria-label="Play Game">
-        <img src="assets/play-button.png" class="play-btn-image" alt="Play Game">
-      </button>
-    </div>
-  </div>
-  <!-- SCREEN 2: Instructions Overlay -->
-  <div id="screen-instructions" class="screen-overlay hidden">
-    <div class="instructions-content">
-      <img src="assets/images/instruction-box.png" alt="Instructions" class="instruction-box-img">
-      <button id="btn-start-game" class="custom-play-btn" aria-label="Start Game">
-        <img src="assets/images/ok-button.png" class="ok-btn-image" alt="OK">
-      </button>
-    </div>
-  </div>
-  <!-- SCREEN 3: Ending Screen Overlay -->
-  <div id="screen-ending" class="screen-overlay cinematic-ending hidden">
-    <!-- Magical Effects Layer (particles, stars, light rays) -->
-    <div id="ending-effects-layer" class="ending-effects-layer"></div>
-
-    <div class="cinematic-content">
-      <img id="wisdom-restored-img" class="wisdom-restored-img float-pulse" src="assets/images/wisdom_restored.png"
-        alt="Wisdom Has Been Restored">
-
-      <div id="final-score-float" class="final-score-float">
-        <div class="score-title">Wisdom Score</div>
-        <div class="score-stars">★★★★★★★★★★★★★★</div>
-        <div id="final-score-num" class="score-value">0</div>
+      <!-- Custom Play Button wrapped for independent float animation -->
+      <div class="play-button-wrapper">
+        <div class="button-reflection"></div>
+        <button id="btn-begin-wisdom" class="custom-play-btn" aria-label="Play Game">
+          <img src="assets/play-button.png" class="play-btn-image" alt="Play Game">
+        </button>
       </div>
-
-
-
     </div>
+    <!-- SCREEN 2: Instructions Overlay -->
+    <div id="screen-instructions" class="screen-overlay hidden">
+      <div class="instructions-content">
+        <img src="assets/images/instruction-box.png" alt="Instructions" class="instruction-box-img">
+        <button id="btn-start-game" class="custom-play-btn" aria-label="Start Game">
+          <img src="assets/images/ok-button.png" class="ok-btn-image" alt="OK">
+        </button>
+      </div>
+    </div>
+    <!-- SCREEN 3: Ending Screen Overlay -->
+    <div id="screen-ending" class="screen-overlay cinematic-ending hidden">
+      <!-- Magical Effects Layer (particles, stars, light rays) -->
+      <div id="ending-effects-layer" class="ending-effects-layer"></div>
+
+      <div class="cinematic-content">
+        <img id="wisdom-restored-img" class="wisdom-restored-img float-pulse" src="assets/images/wisdom_restored.png"
+          alt="Wisdom Has Been Restored">
+
+        <div id="final-score-float" class="final-score-float">
+          <div class="score-title">Wisdom Score</div>
+          <div class="score-stars">★★★★★★★★★★★★★★</div>
+          <div id="final-score-num" class="score-value">0</div>
+        </div>
+
+
+
+      </div>
     </div>
   </div> <!-- Closes #game-container -->
-</div> <!-- Closes #viewport-wrapper -->
 
   <!-- Load JavaScript modular files sequentially -->
   <script src="js/teachings.js"></script>

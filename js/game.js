@@ -61,43 +61,36 @@ function resetPagePosition() {
     document.body.scrollLeft = 0;
 }
 
-const DESIGN_WIDTH = 1920;
-const DESIGN_HEIGHT = 1080;
+function updateGameViewport() {
+    const viewportHeight = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
 
-const viewport = document.getElementById("viewport-wrapper");
-const game = document.getElementById("game-container");
-
-function fitGame(){
-
-    const w = viewport.clientWidth;
-    const h = viewport.clientHeight;
-
-    const scaleX = w / DESIGN_WIDTH;
-    const scaleY = h / DESIGN_HEIGHT;
-
-    const scale = Math.min(scaleX, scaleY);
-
-    game.style.transform = `scale(${scale})`;
-
+    document.documentElement.style.setProperty(
+        '--game-height',
+        `${viewportHeight}px`
+    );
 }
 
-fitGame();
+updateGameViewport();
 
 window.addEventListener('resize', () => {
-    fitGame();
+    updateGameViewport();
     resetPagePosition();
 });
 window.addEventListener('orientationchange', () => {
-    fitGame();
+    updateGameViewport();
     resetPagePosition();
 });
 
 if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', () => {
-        fitGame();
+        updateGameViewport();
         resetPagePosition();
     });
 }
+
+
 
 
 const GameManager = {
