@@ -347,7 +347,7 @@ body {
 /* centering the continuous sentence horizontally while avoiding Shiva, Vishnu, mountains and temple. */
 .sentence-container {
   position: absolute;
-  top: clamp(18vh, 22vh, 28vh);
+  top: clamp(1vh, 18vh, 15vh);
   /* Positioned below header */
   left: 10%;
   right: 10%;
@@ -356,6 +356,7 @@ body {
   /* Keep on a single horizontal row for natural reading flow */
   justify-content: center;
   align-items: center;
+  gap: 0;
   z-index: 10;
   padding: 0;
   opacity: 1 !important;
@@ -382,7 +383,8 @@ body {
   align-items: center;
   justify-content: center;
 
-  width: clamp(120px, 15vw, 200px);
+  width: clamp(144px, 18.7vw, 259px);
+  /* 20% larger than previous */
   height: auto;
   aspect-ratio: 1.8 / 1;
 
@@ -392,7 +394,7 @@ body {
   background-size: contain;
 
   padding: 0 35px;
-  margin: 0 -1.5vw;
+  margin: 0;
   border: 0;
   box-shadow: none;
   z-index: 2;
@@ -413,50 +415,33 @@ body {
   filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4));
 }
 
-  /* The 4 custom cloud designs + special first cloud */
-  .word-cloud.cloud_first {
-    background-image: url("../assets/clouds/first_letter_cloud.png");
-  }
+/* Add natural overlap to overcome transparent PNG padding (approx 24% of bounding box) */
+.sentence-container > * + * {
+  margin-left: clamp(-62px, -4.5vw, -34px);
+}
 
-  .word-cloud.cloud_1 {
-    background-image: url("../assets/clouds/cloud_1.png");
-  }
+/* Custom cloud overrides removed so all sentence words use the default cloud.png */
 
-  .word-cloud.cloud_2 {
-    background-image: url("../assets/clouds/cloud_2.png");
-  }
+.cloud-text {
+  font-family: "Berkshire Swash", cursive;
+  font-weight: 400;
+  font-size: clamp(28px, 2.3cqw, 42px);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-align: center;
+  color: #4a2b08;
+  /* rich dark golden-brown */
+  text-shadow:
+    0 1px 0 #fff8dc,
+    0 2px 4px rgba(255, 220, 120, 0.45),
+    0 0 10px rgba(255, 215, 120, 0.25);
+  z-index: 3;
+  pointer-events: none;
+}
 
-  .word-cloud.cloud_3 {
-    background-image: url("../assets/clouds/cloud_3.png");
-  }
-
-  .word-cloud.cloud_4 {
-    background-image: url("../assets/clouds/cloud_4.png");
-  }
-
-  .cloud-text {
-    font-family: "Berkshire Swash", cursive;
-    font-weight: 400;
-    font-size: clamp(28px, 2.3cqw, 42px);
-    letter-spacing: 0.5px;
-    line-height: 1;
-    text-align: center;
-    color: #4a2b08;
-    /* rich dark golden-brown */
-    text-shadow:
-      0 1px 0 #fff8dc,
-      0 2px 4px rgba(255, 220, 120, 0.45),
-      0 0 10px rgba(255, 215, 120, 0.25);
-    z-index: 3;
-    pointer-events: none;
-  }
-
-  .word-cloud:hover {
-    transform: scale(1.04);
-    z-index: 10;
-  }
-
-  /* Base opacity is 1. JS manages entrance animations and sets inline opacity: 0 initially */
+.word-cloud:hover {
+  transform: scale(1.04);
+  z-index: 10;
   opacity: 1;
 }
 
@@ -481,13 +466,13 @@ body {
   z-index: 10;
   scale: 1.04;
   /* Slightly increase scale by ~4% */
-  filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.5))
-    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow(0 0 10px rgba(254, 228, 64, 0.5)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
     0 0 12px rgba(254, 228, 64, 0.9),
-    /* Brighten glow on hover */ 0 2px 4px rgba(44, 22, 7, 0.4);
+    /* Brighten glow on hover */
+    0 2px 4px rgba(44, 22, 7, 0.4);
   /* Override textGlowBreath to keep hover text-shadow static, but keep float */
   animation: breatheCloud 4.5s ease-in-out infinite alternate;
 }
@@ -536,13 +521,11 @@ body {
 /* Faint golden sparkle / pulsing glow inside the empty cloud */
 @keyframes blankDivineGlow {
   0% {
-    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08))
-      drop-shadow(0 0 5px rgba(254, 228, 64, 0.2));
+    filter: brightness(1.1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 5px rgba(254, 228, 64, 0.2));
   }
 
   100% {
-    filter: brightness(1.25) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08))
-      drop-shadow(0 0 15px rgba(254, 228, 64, 0.6));
+    filter: brightness(1.25) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08)) drop-shadow(0 0 15px rgba(254, 228, 64, 0.6));
   }
 }
 
@@ -601,6 +584,7 @@ body {
 /* Gentle shake for incorrect option clouds */
 
 @keyframes shakeGentle {
+
   0%,
   100% {
     transform: translateX(0);
@@ -682,14 +666,14 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: clamp(8%, 12vh, 18%);
+  bottom: clamp(1.5%, 6vh, 10%);
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-end;
-  gap: clamp(10px, 2vw, 30px);
+  gap: clamp(8px, 1.8vw, 24px);
   flex-wrap: nowrap;
   z-index: 10;
   pointer-events: none;
@@ -729,7 +713,7 @@ body {
   transition:
     opacity 0.5s ease,
     transform 0.5s ease;
-  margin-top: clamp(-20px, -2vw, -10px);
+  margin-top: clamp(-22px, -2.2vw, -11px);
 }
 
 /* Warm Golden Glow Layer */
@@ -741,12 +725,10 @@ body {
   transform: translateX(-50%);
   width: 50%;
   height: 35%;
-  background: radial-gradient(
-    ellipse at center bottom,
-    rgba(254, 228, 64, 0.8) 0%,
-    rgba(251, 133, 0, 0.4) 45%,
-    rgba(251, 133, 0, 0) 75%
-  );
+  background: radial-gradient(ellipse at center bottom,
+      rgba(254, 228, 64, 0.8) 0%,
+      rgba(251, 133, 0, 0.4) 45%,
+      rgba(251, 133, 0, 0) 75%);
   filter: blur(6px);
   pointer-events: none;
   z-index: 2;
@@ -785,7 +767,7 @@ body {
   white-space: nowrap;
   padding: 0 35px;
   border-radius: 0;
-  
+
   aspect-ratio: 1.8 / 1;
   width: 100%;
   height: auto;
@@ -823,11 +805,9 @@ body {
   right: 20%;
   height: clamp(6px, 1.5cqh, 12px);
   /* Swapped cqh to cqh */
-  background: radial-gradient(
-    ellipse at center,
-    rgba(160, 235, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
+  background: radial-gradient(ellipse at center,
+      rgba(160, 235, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0) 70%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   box-shadow: 0 0 8px rgba(0, 180, 216, 0.15);
@@ -915,14 +895,13 @@ body {
 .option-container:hover .option-cloud {
   scale: 1.04;
   /* Slightly scale up cloud inside hovered container */
-  filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6))
-    drop-shadow(0 0 20px rgba(255, 215, 120, 0.4))
-    drop-shadow(0 0 30px rgba(255, 240, 180, 0.25)) brightness(1.08);
+  filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 120, 0.4)) drop-shadow(0 0 30px rgba(255, 240, 180, 0.25)) brightness(1.08);
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
     0 0 12px rgba(254, 228, 64, 0.9),
-    /* Brighten text glow */ 0 2px 4px rgba(44, 22, 7, 0.4);
+    /* Brighten text glow */
+    0 2px 4px rgba(44, 22, 7, 0.4);
   animation-play-state: paused;
   /* Pause text glow breath on hover */
 }
@@ -936,9 +915,7 @@ body {
 
 .option-container.glowing .option-cloud {
   scale: 1.05;
-  filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6))
-    drop-shadow(0 0 20px rgba(255, 215, 120, 0.4))
-    drop-shadow(0 0 30px rgba(255, 240, 180, 0.25)) brightness(1.15);
+  filter: drop-shadow(0 0 10px rgba(255, 215, 120, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 120, 0.4)) drop-shadow(0 0 30px rgba(255, 240, 180, 0.25)) brightness(1.15);
   text-shadow:
     -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
     0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
@@ -1142,8 +1119,7 @@ body {
   }
 
   50% {
-    transform: translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7))
-      scaleY(1.2);
+    transform: translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7)) scaleY(1.2);
     opacity: 0.9;
   }
 
@@ -1283,6 +1259,40 @@ body {
   pointer-events: none !important;
 }
 
+/* --- Instruction Screen --- */
+#screen-instructions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  /* Darken background slightly to focus on instructions */
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.instructions-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.instruction-box-img {
+  max-width: 50vw;
+  height: auto;
+}
+
+.ok-btn-image {
+  max-width: 15vw;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.ok-btn-image:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
 /* Ambient water shimmer overlay */
 .water-shimmer {
   position: absolute;
@@ -1290,11 +1300,9 @@ body {
   left: 0;
   width: 100%;
   height: 40%;
-  background: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
+  background: radial-gradient(ellipse at 50% 50%,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0) 70%);
   mix-blend-mode: overlay;
   pointer-events: none;
   z-index: 5;
@@ -1363,11 +1371,9 @@ body {
   top: 10%;
   left: 10%;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(254, 228, 64, 0.4) 0%,
-    rgba(254, 228, 64, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(254, 228, 64, 0.4) 0%,
+      rgba(254, 228, 64, 0) 70%);
   filter: blur(20px);
   z-index: 1;
   animation: divineGlow 3.5s ease-in-out infinite alternate;
@@ -1380,12 +1386,10 @@ body {
   height: 120%;
   top: -10%;
   left: -10%;
-  background: repeating-conic-gradient(
-    from 0deg,
-    rgba(254, 228, 64, 0) 0deg,
-    rgba(254, 228, 64, 0.15) 10deg,
-    rgba(254, 228, 64, 0) 20deg
-  );
+  background: repeating-conic-gradient(from 0deg,
+      rgba(254, 228, 64, 0) 0deg,
+      rgba(254, 228, 64, 0.15) 10deg,
+      rgba(254, 228, 64, 0) 20deg);
   border-radius: 50%;
   mask-image: radial-gradient(circle, black 20%, transparent 60%);
   -webkit-mask-image: radial-gradient(circle, black 20%, transparent 60%);
@@ -1525,8 +1529,7 @@ body {
   z-index: 4;
 
   /* Divine glow that pulses */
-  filter: drop-shadow(0 0 15px rgba(254, 228, 64, 0.5))
-    drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
+  filter: drop-shadow(0 0 15px rgba(254, 228, 64, 0.5)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.8));
   animation: divineGlow 3.5s ease-in-out infinite alternate;
 }
 
@@ -1555,13 +1558,11 @@ body {
 
 @keyframes logoGlowPulse {
   0% {
-    filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.15))
-      drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 0 8px rgba(254, 228, 64, 0.15)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
   }
 
   100% {
-    filter: drop-shadow(0 0 22px rgba(254, 228, 64, 0.55))
-      drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 0 22px rgba(254, 228, 64, 0.55)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
   }
 }
 
@@ -1605,11 +1606,9 @@ body {
   transform: translateX(-50%) scaleY(-0.6);
   width: 60%;
   height: 40%;
-  background: linear-gradient(
-    to bottom,
-    rgba(254, 228, 64, 0.4) 0%,
-    rgba(72, 202, 228, 0) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(254, 228, 64, 0.4) 0%,
+      rgba(72, 202, 228, 0) 100%);
   filter: blur(8px);
   opacity: 0.35;
   pointer-events: none;
@@ -1786,11 +1785,9 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle at 50% 38%,
-    rgba(255, 235, 200, 0.15) 0%,
-    rgba(9, 14, 24, 0) 80%
-  );
+  background: radial-gradient(circle at 50% 38%,
+      rgba(255, 235, 200, 0.15) 0%,
+      rgba(9, 14, 24, 0) 80%);
   pointer-events: none;
   z-index: 8;
 }
@@ -1803,12 +1800,10 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle,
-    #fee440 0%,
-    rgba(254, 228, 64, 0.8) 50%,
-    rgba(251, 133, 0, 0.4) 100%
-  );
+  background: radial-gradient(circle,
+      #fee440 0%,
+      rgba(254, 228, 64, 0.8) 50%,
+      rgba(251, 133, 0, 0.4) 100%);
   z-index: 99;
   opacity: 0;
   pointer-events: none;
@@ -1905,28 +1900,22 @@ body {
 .word-cloud.cloud_2 {
   animation:
     cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-    breatheCloud2 5.5s ease-in-out calc(var(--delay, 0s) + 1s) infinite
-      alternate,
-    textGlowBreath 3.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite
-      alternate;
+    breatheCloud2 5.5s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 3.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
 
 .word-cloud.cloud_3 {
   animation:
     cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-    breatheCloud3 4.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite
-      alternate,
-    textGlowBreath 2.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite
-      alternate;
+    breatheCloud3 4.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 2.8s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
 
 .word-cloud.cloud_4 {
   animation:
     cloudEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) var(--delay, 0s) forwards,
-    breatheCloud4 5.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite
-      alternate,
-    textGlowBreath 3.4s ease-in-out calc(var(--delay, 0s) + 1s) infinite
-      alternate;
+    breatheCloud4 5.2s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate,
+    textGlowBreath 3.4s ease-in-out calc(var(--delay, 0s) + 1s) infinite alternate;
 }
 
 /* 4 Desynchronized organic floating animations (bobbing + side drift + rotate) */
@@ -2202,8 +2191,7 @@ body {
   background: #fff;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  animation: splashDropletAnim 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94)
-    forwards;
+  animation: splashDropletAnim 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes splashDropletAnim {
@@ -2251,18 +2239,16 @@ body {
   width: 6px;
   height: 6px;
   background: #fee440;
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
+  clip-path: polygon(50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%);
   transform: translate(-50%, -50%) scale(0);
   animation: splashSparkleAnim 700ms ease-out forwards;
 }
@@ -2317,12 +2303,10 @@ body {
 /* Magical Sparkles for Cloud Emergence */
 .magical-sparkle {
   position: absolute;
-  background: radial-gradient(
-    circle,
-    #fee440 0%,
-    rgba(251, 133, 0, 0.8) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: radial-gradient(circle,
+      #fee440 0%,
+      rgba(251, 133, 0, 0.8) 50%,
+      rgba(255, 255, 255, 0) 100%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 20;
@@ -2337,8 +2321,7 @@ body {
   }
 
   100% {
-    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)))
-      scale(0);
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
     opacity: 0;
   }
 }
@@ -2382,12 +2365,10 @@ body {
   transform: translate3d(-50%, -50%, 0) scale(0.2);
   width: 190px;
   height: 190px;
-  background: radial-gradient(
-    circle,
-    rgba(254, 228, 64, 0.6) 0%,
-    rgba(254, 228, 64, 0.25) 45%,
-    rgba(254, 228, 64, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(254, 228, 64, 0.6) 0%,
+      rgba(254, 228, 64, 0.25) 45%,
+      rgba(254, 228, 64, 0) 70%);
   border-radius: 50%;
   pointer-events: none;
   z-index: -1;
@@ -2413,12 +2394,10 @@ body {
 /* Success sparkles styling */
 .success-sparkle {
   z-index: 1000;
-  background: radial-gradient(
-    circle,
-    #fee440 0%,
-    #ffb703 60%,
-    rgba(255, 255, 255, 0) 100%
-  ) !important;
+  background: radial-gradient(circle,
+      #fee440 0%,
+      #ffb703 60%,
+      rgba(255, 255, 255, 0) 100%) !important;
   box-shadow: 0 0 8px #fee440;
 }
 
@@ -2660,17 +2639,15 @@ body {
 .celebration-particle {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 240, 150, 1) 0%,
-    rgba(255, 200, 0, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 240, 150, 1) 0%,
+      rgba(255, 200, 0, 0) 70%);
   animation: floatUpSlow linear forwards;
 }
 
 .celebration-petal {
   position: absolute;
-  background: url(""../assets/clouds/lotus.png"") no-repeat center center;
+  background: url("" ../assets/clouds/lotus.png"") no-repeat center center;
   background-size: contain;
   animation: driftDown linear forwards;
 }

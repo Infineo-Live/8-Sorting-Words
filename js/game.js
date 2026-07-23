@@ -30,7 +30,7 @@ const GameManager = {
       this.btnBegin.addEventListener('click', () => {
         // Play ambient bell to initialize Audio Context
         SoundManager.playBell();
-        this.startGame();
+        this.showInstructions();
       });
     }
 
