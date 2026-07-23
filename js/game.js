@@ -92,8 +92,6 @@ const GameManager = {
     this.updateScoreboard();
     VisualManager.resetJourney();
     VisualManager.resetEndingLotus();
-    VisualManager.shivaReset();
-    VisualManager.vishnuReset();
     VisualManager.resetCamera();
 
     // Show in-game instruction overlay, wait for OK button to load teaching
@@ -115,10 +113,7 @@ const GameManager = {
 
     this.attempts = 0;
     this.isInputActive = false;
-    VisualManager.shivaReset();
-    VisualManager.vishnuReset();
     VisualManager.resetCamera();
-    VisualManager.hideVishnuSpeech();
     this.optionsContainer.classList.remove('active');
     this.optionsContainer.innerHTML = '';
 
@@ -245,7 +240,6 @@ const GameManager = {
     const teaching = TEACHINGS[this.currentTeachingIndex];
 
     // Prepare Vishnu behavior
-    VisualManager.vishnuContemplate();
     VisualManager.focusCameraOnGanga();
 
     // Wait a brief 200ms pause before revealing options gracefully
@@ -371,15 +365,9 @@ const GameManager = {
         this.animateCloudToSentence(element, teaching.missingWord, () => {
           this.updateScoreboard();
 
-          // Restored visual reactions
-          VisualManager.shivaSmile();
-          VisualManager.vishnuNod();
-          VisualManager.hideVishnuSpeech();
-
-          // Show floating score popup above Shiva
-          const shivaRect = document.getElementById('shiva-character').getBoundingClientRect();
-          const popupX = (shivaRect.left + shivaRect.width / 2) - containerRect.left;
-          const popupY = shivaRect.top - containerRect.top - 40;
+          // Show floating score popup centered
+          const popupX = containerRect.width / 2;
+          const popupY = containerRect.height / 3;
           VisualManager.showFloatingScore(pointsAwarded, popupX, popupY);
 
           // Glow the entire sentence
@@ -601,14 +589,9 @@ const GameManager = {
         this.animateCloudToSentence(correctElem, teaching.missingWord, () => {
           this.updateScoreboard();
 
-          VisualManager.shivaSmile();
-          VisualManager.vishnuNod();
-          VisualManager.hideVishnuSpeech();
-
-          // Show floating score popup above Shiva
-          const shivaRect = document.getElementById('shiva-character').getBoundingClientRect();
-          const popupX = (shivaRect.left + shivaRect.width / 2) - containerRect.left;
-          const popupY = shivaRect.top - containerRect.top - 40;
+          // Show floating score popup centered
+          const popupX = containerRect.width / 2;
+          const popupY = containerRect.height / 3;
           VisualManager.showFloatingScore(pointsAwarded, popupX, popupY);
 
           // Glow the entire sentence
@@ -678,8 +661,6 @@ const GameManager = {
     }
 
     // Set visual states
-    VisualManager.shivaBless();
-    VisualManager.vishnuNamaste();
     VisualManager.focusCameraOnGanga();
 
     // Generate Wisdom list
@@ -731,12 +712,9 @@ const GameManager = {
     this.fadeInstructionsOut();
 
     // Reset all visuals
-    VisualManager.shivaReset();
-    VisualManager.vishnuReset();
     VisualManager.resetCamera();
     VisualManager.resetJourney();
     VisualManager.resetEndingLotus();
-    VisualManager.hideVishnuSpeech();
 
     this.sentenceContainer.innerHTML = '';
     this.optionsContainer.innerHTML = '';

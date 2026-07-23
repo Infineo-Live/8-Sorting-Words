@@ -33,7 +33,6 @@
     const birds = [];
     const dustParticles = [];
     const lakeEmbers = [];
-    const lakeEmbers = [];
     const clickSparkles = [];
 
     const playBtn = document.getElementById('btn-begin-wisdom');

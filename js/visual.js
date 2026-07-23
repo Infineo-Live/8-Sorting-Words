@@ -18,80 +18,13 @@
 })();
 
 const VisualManager = {
-  // Character Elements
-  shiva: document.getElementById('shiva-character'),
-  vishnu: document.getElementById('vishnu-character'),
+  // Scene Elements
   scene: document.getElementById('game-scene'),
-  vishnuSpeech: document.getElementById('vishnu-speech'),
-  vishnuSpeechText: document.getElementById('vishnu-speech-text'),
   riverSparkles: document.getElementById('river-sparkles'),
   endingLotus: document.getElementById('ending-lotus-container'),
   wisdomReveal: document.getElementById('wisdom-reveal-text'),
   floatingScoreArea: document.getElementById('floating-score'),
 
-  // Shiva States
-  setShivaState(state) {
-    if (!this.shiva) return;
-    this.shiva.className = `character shiva state-${state}`;
-  },
-
-  shivaSmile() {
-    this.setShivaState('smile');
-  },
-
-  shivaBless() {
-    this.setShivaState('bless');
-  },
-
-  shivaReset() {
-    this.setShivaState('normal');
-  },
-
-  // Vishnu States
-  setVishnuState(state) {
-    if (!this.vishnu) return;
-    this.vishnu.className = `character vishnu state-${state}`;
-  },
-
-  vishnuContemplate() {
-    this.setVishnuState('chin');
-  },
-
-  vishnuNamaste() {
-    this.setVishnuState('namaste');
-  },
-
-  vishnuReset() {
-    this.setVishnuState('normal');
-  },
-
-  vishnuNod() {
-    if (!this.vishnu) return;
-    this.vishnu.classList.add('nodding');
-    setTimeout(() => {
-      this.vishnu.classList.remove('nodding');
-    }, 700);
-  },
-
-  // Vishnu Speech Bubble
-  showVishnuSpeech(text, duration = null) {
-    if (!this.vishnuSpeech || !this.vishnuSpeechText) return;
-
-    this.vishnuSpeechText.textContent = text;
-    this.vishnuSpeech.classList.remove('hidden');
-
-    if (duration) {
-      setTimeout(() => {
-        this.hideVishnuSpeech();
-      }, duration);
-    }
-  },
-
-  hideVishnuSpeech() {
-    if (this.vishnuSpeech) {
-      this.vishnuSpeech.classList.add('hidden');
-    }
-  },
 
   // Camera Gaze Controls
   focusCameraOnGanga() {
