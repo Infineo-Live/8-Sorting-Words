@@ -347,8 +347,8 @@ body {
 /* centering the continuous sentence horizontally while avoiding Shiva, Vishnu, mountains and temple. */
 .sentence-container {
   position: absolute;
-  top: 32%;
-  /* Positioned lower to accommodate UI and layout */
+  top: clamp(18vh, 22vh, 28vh);
+  /* Positioned below header */
   left: 10%;
   right: 10%;
   display: flex;
@@ -376,13 +376,27 @@ body {
 /* Word Cloud & Blank shared styles (increased by 10-15% for soft fluffy readability) */
 .word-cloud,
 .blank-placeholder {
-  background: url("../assets/clouds/cloud.png") no-repeat center center;
-  /* rich dark golden-brown */
-  padding: 0 clamp(10px, 1.8vw, 24px) clamp(10px, 1.5vh, 18px)
-    clamp(10px, 1.8vw, 24px);
-  /* Swapped to standard viewport units */
-  border-radius: 0;
-  border: none;
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(120px, 15vw, 200px);
+  height: auto;
+  aspect-ratio: 1.8 / 1;
+
+  background-image: url("../assets/clouds/cloud.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  padding: 0 35px;
+  margin: 0 -1.5vw;
+  border: 0;
+  box-shadow: none;
+  z-index: 2;
+
   text-shadow:
     0 1px 0 #fff8dc,
     0 2px 4px rgba(255, 220, 120, 0.45),
@@ -395,41 +409,9 @@ body {
     opacity 0.5s ease,
     scale 0.25s ease-in-out,
     text-shadow 0.25s ease-in-out;
-  position: relative;
   will-change: transform, opacity;
-  /* GPU Performance Optimization */
-
-  /* Bevel & emboss effect with soft warm golden outer glow */
-  /* Magical Cloud Styles */
-  .word-cloud,
-  .blank-placeholder {
-    /* Use aspect ratio to allow auto-scaling width while maintaining proportion */
-    aspect-ratio: 1.8 / 1;
-    height: auto;
-    min-width: clamp(120px, 15vw, 180px);
-
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    /* 5-10% overlap */
-    margin: 0 -2cqw;
-    padding: 0 35px;
-    /* Ensures text pushes width if long */
-
-    z-index: 2;
-    filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4));
-    /* Soft shadow for depth */
-
-    /* Smooth transition for when flying into sentence */
-    transition:
-      filter 0.3s ease,
-      opacity 0.3s ease;
-  }
+  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4));
+}
 
   /* The 4 custom cloud designs + special first cloud */
   .word-cloud.cloud_first {
@@ -698,16 +680,16 @@ body {
 /* Option clouds container inside River */
 .river-options-container {
   position: absolute;
-  left: 2%;
-  right: 2%;
-  bottom: 8%;
-  width: 96%;
+  left: 0;
+  right: 0;
+  bottom: clamp(8%, 12vh, 18%);
+  width: 100%;
   height: auto;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: flex-end;
-  gap: 2vw;
+  gap: clamp(10px, 2vw, 30px);
   flex-wrap: nowrap;
   z-index: 10;
   pointer-events: none;
@@ -734,23 +716,20 @@ body {
     filter 0.3s ease,
     opacity 0.5s ease;
   margin: 0;
-  flex-shrink: 1;
-  /* Allow shrinking to prevent overflow */
+  width: clamp(120px, 16vw, 220px);
 }
 
 /* Lotus Base Layer */
 .option-lotus {
   position: relative;
-  width: 60%;
-  /* 55-65% of cloud width */
+  width: 80%;
   height: auto;
   pointer-events: none;
   z-index: 1;
   transition:
     opacity 0.5s ease,
     transform 0.5s ease;
-  margin-top: clamp(-20px, -2.5cqh, -10px);
-  /* Pulled closer to overlap slightly with cloud */
+  margin-top: clamp(-20px, -2vw, -10px);
 }
 
 /* Warm Golden Glow Layer */
@@ -792,7 +771,7 @@ body {
 /* Interactive Cloud Layer */
 .option-cloud {
   background: url("../assets/clouds/cloud.png") no-repeat center center;
-  background-size: 100% 100%;
+  background-size: contain;
   color: #4a2b08;
   /* rich dark golden-brown */
   border: none;
@@ -804,11 +783,14 @@ body {
   line-height: 1;
   text-align: center;
   white-space: nowrap;
-  padding: 0 clamp(8px, 2.5vw, 40px) clamp(8px, 2vh, 22px)
-    clamp(8px, 2.5vw, 40px);
+  padding: 0 35px;
   border-radius: 0;
-  width: clamp(100px, 18vw, 191px);
-  height: clamp(60px, 12vh, 128px);
+  
+  aspect-ratio: 1.8 / 1;
+  width: 100%;
+  height: auto;
+  flex: 0 0 auto;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2518,23 +2500,7 @@ body {
   transform-origin: bottom center;
 }
 
-/* Answer clouds arc arrangement */
-.river-options-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 10%;
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  flex-wrap: nowrap !important;
-  z-index: 10;
-  pointer-events: none;
-}
+/* Duplicate river-options-container removed in favor of unified container at line 699 */
 
 .option-container {
   display: inline-flex;
@@ -2550,56 +2516,14 @@ body {
     opacity 0.5s ease;
 }
 
-/* 4-in-a-row arc */
-.option-container:nth-child(1),
-.option-container:nth-last-child(1) {
-  transform: translateY(25px);
-}
-
-.option-container:nth-child(2),
-.option-container:nth-last-child(2) {
-  transform: translateY(8px);
-}
-
-.option-container:nth-child(3):not(:first-child):not(:last-child) {
-  transform: translateY(0);
-}
+/* Arc positioning removed for proper horizontal alignment */
 
 .option-container:hover {
   transform: translateY(-10px) scale(1.05) !important;
   z-index: 10;
 }
 
-/* Cloud base styling (just in case they were lost in git checkout) */
-.word-cloud,
-.blank-placeholder {
-  background: url("../assets/clouds/cloud.png") no-repeat center center;
-  background-size: 100% 100%;
-  color: #2c1607;
-  padding: 10px 24px;
-  font-family: "Fredoka", "Comfortaa", "Outfit", sans-serif;
-  font-size: clamp(21px, 3cqw, 33px);
-  font-weight: 800;
-  text-shadow:
-    -0.5px -0.5px 0px rgba(255, 255, 255, 0.9),
-    0.5px 0.5px 0px rgba(44, 22, 7, 0.9),
-    0 0 6px rgba(254, 228, 64, 0.5),
-    0 2px 4px rgba(44, 22, 7, 0.4);
-  width: clamp(220px, 25cqw, 300px);
-  height: clamp(145px, 16cqh, 195px);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 -22px;
-  z-index: 2;
-  filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.4));
-  /* Soft shadow for depth */
-}
-
-.word-cloud:hover {
-  scale: 1.04;
-  z-index: 10;
-}
+/* Duplicate cloud base styling removed */
 
 /* Journey Tracker */
 
