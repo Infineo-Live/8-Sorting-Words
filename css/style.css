@@ -13,15 +13,6 @@
   --color-glass-border: rgba(255, 255, 255, 0.08);
   --font-display: "Cinzel Decorative", "Playfair Display", Georgia, serif;
   --font-body: "Comfortaa", "Outfit", sans-serif;
-
-  --game-width: 100vw;
-  --game-height: 100vh;
-}
-
-@supports (height: 100dvh) {
-    :root {
-        --game-height: 100dvh;
-    }
 }
 
 /* Reset and Base Styling */
@@ -35,44 +26,39 @@
 
 body {
   font-family: var(--font-body);
-  background-color: var(--color-sky-night);
+  background-color: black;
   color: #f7fafc;
   overflow: hidden;
-  width: 100vw;
-  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#viewport-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Establishes a query container so every cqw/cqh unit used throughout
-     this stylesheet (logo, header, clouds, welcome/instructions/ending
-     screens, particles, etc.) has something to resolve against. Set on
-     <body> rather than #game-container because #screen-welcome,
-     #screen-instructions, and #screen-ending are SIBLINGS of
-     #game-container, not descendants of it — body is the nearest common
-     ancestor of all of them. Without this, cqw/cqh are invalid, browsers
-     fall back to 0, and every clamp(min, 0, max) collapses to its
-     minimum — which is why everything but the (vw/vh-based) background
-     was rendering at its smallest possible size. */
-  container-type: size;
+  background: black;
 }
 
 /* Main Container: Fullscreen */
-#viewport-wrapper,
-#game-container,
-#app,
-.game-wrapper,
-.game-container,
-.screen,
-.game-screen {
+#game-container {
   position: relative;
-  width: var(--game-width);
-  height: var(--game-height);
+  width: 1920px;
+  height: 1080px;
   overflow: hidden;
   border-radius: 0;
   box-shadow: none;
   display: flex;
   flex-direction: column;
   z-index: 1;
+  transform-origin: center center;
+  container-type: size;
 }
 
 /* Transparent canvas overlay for lightweight particle animations */
@@ -423,7 +409,7 @@ canvas,
   align-items: center;
   justify-content: center;
 
-  width: clamp(144px, 18.7vw, 259px);
+  width: 259px;
   /* 20% larger than previous */
   height: auto;
   aspect-ratio: 1.8 / 1;
@@ -457,7 +443,7 @@ canvas,
 
 /* Add natural overlap to overcome transparent PNG padding (approx 24% of bounding box) */
 .sentence-container>*+* {
-  margin-left: clamp(-62px, -4.5vw, -34px);
+  margin-left: -62px;
 }
 
 /* Custom cloud overrides removed so all sentence words use the default cloud.png */
@@ -706,14 +692,14 @@ canvas,
   position: absolute;
   left: 0;
   right: 0;
-  bottom: clamp(1.5%, 6vh, 10%);
+  bottom: 10%;
   width: 100%;
   height: auto;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-end;
-  gap: clamp(8px, 1.8vw, 24px);
+  gap: 24px;
   flex-wrap: nowrap;
   z-index: 10;
   pointer-events: none;
@@ -740,7 +726,7 @@ canvas,
     filter 0.3s ease,
     opacity 0.5s ease;
   margin: 0;
-  width: clamp(120px, 16vw, 220px);
+  width: 220px;
 }
 
 /* Lotus Base Layer */
@@ -753,7 +739,7 @@ canvas,
   transition:
     opacity 0.5s ease,
     transform 0.5s ease;
-  margin-top: clamp(-22px, -2.2vw, -11px);
+  margin-top: -22px;
 }
 
 /* Warm Golden Glow Layer */
@@ -1315,12 +1301,12 @@ canvas,
 }
 
 .instruction-box-img {
-  max-width: 43vw;
+  max-width: 825px;
   height: auto;
 }
 
 .ok-btn-image {
-  max-width: 15vw;
+  max-width: 288px;
   height: auto;
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease;
@@ -2047,57 +2033,7 @@ canvas,
 
 /* Scroll & Instructions Card Styling */
 
-/* Responsive Media Queries */
-@media (max-width: 768px) {
-  body {
-    padding: 0;
-  }
-
-  #game-container {
-    border-radius: 0;
-    max-height: 100%;
-    height: 100vh;
-  }
-
-  #game-header {
-    padding: 10px 15px;
-    z-index: 30;
-  }
-
-  .lotus-slot {
-    width: 32px;
-    height: 32px;
-  }
-
-  .scoreboard {
-    padding: 6px 12px;
-  }
-
-  .score-label {
-    font-size: 0.7rem;
-  }
-
-  .score-value {
-    font-size: 0.9rem;
-  }
-
-  .river-options-container {
-    gap: 10px;
-  }
-
-  .wisdom-reveal-text {
-    font-size: 1rem;
-    bottom: -25px;
-  }
-}
-
-/* Landscape Mode for Small Phones */
-@media (max-height: 480px) and (orientation: landscape) {
-  .river-options-container {
-    gap: 8px;
-  }
-}
-
+/* Responsive Media Queries Removed */
 /* Compact In-game Instructions Overlay */
 .game-instructions-panel {
   position: absolute;
@@ -2705,7 +2641,7 @@ canvas,
   }
 
   100% {
-    transform: translateY(-100vh) scale(1.2);
+    transform: translateY(-100%) scale(1.2);
     opacity: 0;
   }
 }

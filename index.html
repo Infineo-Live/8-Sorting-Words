@@ -21,6 +21,7 @@
 </head>
 
 <body>
+<div id="viewport-wrapper">
   <div id="game-container" class="state-opening">
     <div id="game-bg" class="game-bg"></div>
     <!-- Top Navigation / Header (visible during gameplay and ending) -->
@@ -149,14 +150,12 @@
       <div id="river-options-container" class="river-options-container">
         <!-- Option clouds populated dynamically -->
       </div>
-  </div>
+      </div>
+    </main>
 
-  </div>
-  </main>
-
-  <!-- SCREEN 1: Welcome / Title Screen Overlay -->
-  <div id="screen-welcome" class="screen-overlay welcome-screen-overlay">
-    <canvas id="welcome-particles" class="welcome-particles-canvas"></canvas>
+    <!-- SCREEN 1: Welcome / Title Screen Overlay -->
+    <div id="screen-welcome" class="screen-overlay welcome-screen-overlay">
+      <canvas id="welcome-particles" class="welcome-particles-canvas"></canvas>
     <!-- Ambient water shimmer overlay -->
     <div class="water-shimmer"></div>
 
@@ -222,7 +221,9 @@
 
 
     </div>
-  </div>
+    </div>
+  </div> <!-- Closes #game-container -->
+</div> <!-- Closes #viewport-wrapper -->
 
   <!-- Load JavaScript modular files sequentially -->
   <script src="js/teachings.js"></script>
